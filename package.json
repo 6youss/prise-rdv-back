@@ -37,6 +37,7 @@
     "@types/passport-local": "^1.0.33",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.18.2",
+    "mocha": "^6.2.2",
     "nodemon": "^2.0.1",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.3"
