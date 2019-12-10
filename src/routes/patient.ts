@@ -3,6 +3,6 @@ import PatientController from "../controllers/PatientController";
 
 const router = Router();
 
-router.get("/patient", PatientController.getPatients);
+router.get("/", PatientController.getPatients);
 
 export default router;

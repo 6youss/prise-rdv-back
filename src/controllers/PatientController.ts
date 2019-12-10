@@ -7,10 +7,14 @@ class PatientController {
    * Set all the patients
    */
   static async getPatients(req: Request, res: Response, next: NextFunction) {
-    const patients = await Patient.find();
-    return res.json({
-      patients
-    });
+    try {
+      const patients = await Patient.find().select("_id firstName lastName");
+      return res.json({
+        patients
+      });
+    } catch (error) {
+      return res.sendStatus(500);
+    }
   }
 }
 
