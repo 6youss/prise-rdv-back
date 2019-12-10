@@ -10,7 +10,7 @@ declare global {
       JWT_ACCESS_SECRET: string;
       JWT_REFRESH_SECRET: string;
       PORT: string;
-      DB_NAME?: string;
+      MONGODB_URI_LOCAL: string;
     }
   }
 }

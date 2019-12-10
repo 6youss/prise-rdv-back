@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://localhost:27017/prise-rdv", {
+mongoose.connect(process.env.MONGODB_URI_LOCAL, {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true

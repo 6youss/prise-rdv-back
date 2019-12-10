@@ -6,7 +6,12 @@ class PatientController {
    * GET /patient
    * Set all the patients
    */
-  static async getPatients(req: Request, res: Response, next: NextFunction) {}
+  static async getPatients(req: Request, res: Response, next: NextFunction) {
+    const patients = await Patient.find();
+    return res.json({
+      patients
+    });
+  }
 }
 
 export default PatientController;

@@ -1,11 +1,10 @@
 import { Router } from "express";
-import passport from "passport";
 import UserController from "../controllers/UserController";
 
 const router = Router();
 
-router.post("/login", UserControlLer.postLogin);
-router.post("/signup", UserControlLer.postSignup);
-router.post("/token", UserControlLer.refreshToken);
+router.post("/login", UserController.postLogin);
+router.post("/signup", UserController.postSignup);
+router.post("/token", UserController.refreshToken);
 
 export default router;
