@@ -1,19 +1,43 @@
 import bcrypt from "bcryptjs";
 import mongoose, { Schema, Document } from "mongoose";
 
+export interface IUserType {
+  value: "doctor" | "patient";
+  targetId: Schema.Types.ObjectId;
+}
+
 export interface IUser extends Document {
-  id: string;
   username: string;
   password: string;
   refreshToken: string;
+  userType: IUserType;
   comparePassword: comparePasswordFunction;
 }
+
 type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
+
+const UserTypeSchema = new Schema(
+  {
+    value: {
+      type: String,
+      // Warning: only use valid Model names because it will be used in reference.model.refPath
+      enum: ["doctor", "patient"]
+    },
+    targetId: {
+      type: Schema.Types.ObjectId,
+      refPath: "userType.value"
+    }
+  },
+  {
+    _id: false
+  }
+);
 
 const UserSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  refreshToken: String
+  refreshToken: String,
+  userType: UserTypeSchema
 });
 
 const comparePassword: comparePasswordFunction = function(candidatePassword, cb) {

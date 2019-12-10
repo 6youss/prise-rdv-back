@@ -1,6 +1,6 @@
-const assert = require("assert");
+import assert from "assert";
 
-const User = require("../models/User");
+import User from "../models/User";
 
 //describe tests
 describe("Saving records", () => {

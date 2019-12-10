@@ -1,10 +1,11 @@
 import { Router } from "express";
 import passport from "passport";
-import UserControler from "../controlers/UserControler";
+import UserController from "../controllers/UserController";
 
 const router = Router();
 
-router.post("/login", passport.authenticate("local", { session: false }), UserControler.login);
-router.post("/token", UserControler.refreshToken);
+router.post("/login", UserControlLer.postLogin);
+router.post("/signup", UserControlLer.postSignup);
+router.post("/token", UserControlLer.refreshToken);
 
 export default router;
