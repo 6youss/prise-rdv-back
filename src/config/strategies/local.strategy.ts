@@ -2,7 +2,7 @@ import { Strategy } from "passport-local";
 
 import User from "../../models/User";
 
-module.exports = new Strategy(
+export default new Strategy(
   {
     usernameField: "username",
     passwordField: "password"

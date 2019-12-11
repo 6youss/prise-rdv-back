@@ -4,6 +4,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import routes from "./routes";
 import mongooseConnection from "./models/index";
+import configPassport from "./config/passport";
+
 const app = express();
 
 mongooseConnection.once("open", function() {
@@ -11,7 +13,7 @@ mongooseConnection.once("open", function() {
   app.use(express.static("./public"));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-  require("./config/passport")(app);
+  configPassport(app);
   // Routes
   app.use("/api", routes);
 
