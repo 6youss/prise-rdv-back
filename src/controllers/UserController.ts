@@ -22,7 +22,7 @@ class UserController {
           return res.status(401).json(info);
         }
         const userPayload = { id: user._id, username: user.username, userType: user.userType.value };
-        const accessToken = jwt.sign(userPayload, process.env.JWT_ACCESS_SECRET, { expiresIn: "30s" });
+        const accessToken = jwt.sign(userPayload, process.env.JWT_ACCESS_SECRET, { expiresIn: "30m" });
         const refreshToken = jwt.sign(userPayload, process.env.JWT_REFRESH_SECRET);
         user.refreshToken = refreshToken;
         await user.save();
