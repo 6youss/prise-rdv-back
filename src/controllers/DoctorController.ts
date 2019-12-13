@@ -16,6 +16,7 @@ class DoctorController {
       return res.sendStatus(500);
     }
   }
+  
   /**
    * GET /doctor/:saerchValue
    * Get searched Doctors
