@@ -26,7 +26,7 @@ class UserController {
         const refreshToken = jwt.sign(userPayload, process.env.JWT_REFRESH_SECRET);
         user.refreshToken = refreshToken;
         await user.save();
-        return res.json({ user: userPayload, accessToken, refreshToken });
+        return res.json({ message:"User logged in successfuly.", user: userPayload, accessToken, refreshToken });
       } catch (error) {
         return res.sendStatus(500);
       }
