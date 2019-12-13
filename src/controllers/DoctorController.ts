@@ -16,6 +16,42 @@ class DoctorController {
       return res.sendStatus(500);
     }
   }
+  /**
+   * GET /doctor/:saerchValue
+   * Get searched Doctors
+   */
+  static async getSearchedDoctors(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const searchValue = req.params.searchValue;
+
+    if (!searchValue)
+      return res.status(422).json({ message: "Invalid Search Text" });
+
+    const getRegex = (str: string) => ({
+      $or: [
+        { firstName: { $regex: str, $options: "i" } },
+        { lastName: { $regex: str, $options: "i" } }
+      ]
+    });
+
+    const query = searchValue
+      .split(" ")
+      .reduce((accum, currentValue) => [...accum, getRegex(currentValue)], []);
+
+    try {
+      const doctors = await Doctor.find({ $and: query })
+        .select("_id firstName lastName")
+        .lean();
+      return res.json({
+        doctors
+      });
+    } catch (error) {
+      return res.sendStatus(500);
+    }
+  }
 }
 
 export default DoctorController;

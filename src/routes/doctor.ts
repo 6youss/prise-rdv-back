@@ -5,5 +5,7 @@ import DoctorController from "../controllers/DoctorController";
 const router = Router();
 
 router.get("/", DoctorController.getDoctors);
+router.get("/:searchValue", DoctorController.getSearchedDoctors);
 
 export default router;
+    
