@@ -8,6 +8,32 @@ import passport from "passport";
 
 class UserController {
   /**
+   * Get /
+   * Get user info using a token
+   */
+  static async getUser(req: Request, res: Response, next: NextFunction) {
+    const {
+      userType: { value, targetId }
+    } = req.user;    
+    try {
+      switch (value) {
+        case "doctor": {
+          const doctor = await Doctor.findById(targetId);
+          return res.status(200).json({ doctor });
+        }
+        case "patient": {
+          const patient = await Patient.findById(targetId);
+          return res.status(200).json({ patient });
+        }
+        default:
+          return res.status(422).json({ message: "Wrong user type." });
+      }
+    } catch (error) {
+      return res.sendStatus(500);
+    }
+  }
+
+  /**
    * POST /login
    * Sign in using email and password.
    */
@@ -16,21 +42,40 @@ class UserController {
      * @TODO
      * Validation
      */
-    passport.authenticate("local", async (err: Error, user: IUser, info: IVerifyOptions) => {
-      try {
-        if (!user || err) {
-          return res.status(401).json(info);
+    passport.authenticate(
+      "local",
+      async (err: Error, user: IUser, info: IVerifyOptions) => {
+        try {
+          if (!user || err) {
+            return res.status(401).json(info);
+          }
+          const userPayload = {
+            id: user._id,
+            username: user.username,
+            userType: user.userType.value
+          };
+          const accessToken = jwt.sign(
+            userPayload,
+            process.env.JWT_ACCESS_SECRET,
+            { expiresIn: "30m" }
+          );
+          const refreshToken = jwt.sign(
+            userPayload,
+            process.env.JWT_REFRESH_SECRET
+          );
+          user.refreshToken = refreshToken;
+          await user.save();
+          return res.json({
+            message: "User logged in successfuly.",
+            user: userPayload,
+            accessToken,
+            refreshToken
+          });
+        } catch (error) {
+          return res.sendStatus(500);
         }
-        const userPayload = { id: user._id, username: user.username, userType: user.userType.value };
-        const accessToken = jwt.sign(userPayload, process.env.JWT_ACCESS_SECRET, { expiresIn: "30m" });
-        const refreshToken = jwt.sign(userPayload, process.env.JWT_REFRESH_SECRET);
-        user.refreshToken = refreshToken;
-        await user.save();
-        return res.json({ message:"User logged in successfuly.", user: userPayload, accessToken, refreshToken });
-      } catch (error) {
-        return res.sendStatus(500);
       }
-    })(req, res, next);
+    )(req, res, next);
   }
 
   /**
@@ -47,7 +92,9 @@ class UserController {
     try {
       const foundUser = await User.findOne({ username });
       if (foundUser) {
-        return res.status(409).json({ message: "Account with that user name already exists." });
+        return res
+          .status(409)
+          .json({ message: "Account with that user name already exists." });
       }
 
       const user = new User({
@@ -89,13 +136,21 @@ class UserController {
       const user = await User.findOne({ refreshToken: token });
       if (!user) return res.sendStatus(403);
       const { refreshToken } = user;
-      jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user: any) => {
-        if (err) return res.sendStatus(403);
-        const accessToken = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_ACCESS_SECRET, {
-          expiresIn: "30s"
-        });
-        return res.json({ accessToken });
-      });
+      jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET,
+        (err, user: any) => {
+          if (err) return res.sendStatus(403);
+          const accessToken = jwt.sign(
+            { id: user._id, username: user.username },
+            process.env.JWT_ACCESS_SECRET,
+            {
+              expiresIn: "30s"
+            }
+          );
+          return res.json({ accessToken });
+        }
+      );
     } catch (e) {
       res.sendStatus(500);
     }

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "tsc && concurrently \"npm run watch-node\" \"npm run watch-ts\"",
+    "start": "concurrently \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon dist/server.js",
     "build": "tsc",
