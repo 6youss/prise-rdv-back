@@ -13,4 +13,6 @@ declare global {
       MONGODB_URI_LOCAL: string;
     }
   }
+  type FieldError = string;
+  type FieldErrors = Record<string, FieldError>;
 }
