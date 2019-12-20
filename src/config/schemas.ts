@@ -1,13 +1,4 @@
 import Joi from "@hapi/joi";
-import { ValidationError, ValidationErrorItem } from "@hapi/joi";
-
-export function parseErrorSchema(errors: ValidationError): FieldErrors {
-  const errs: FieldErrors = {};
-  errors.details.forEach((error: ValidationErrorItem) => {
-    errs[error.path.join(".")] = error.message;
-  });
-  return errs;
-}
 
 export const signUpSchema = Joi.object({
   username: Joi.string()
@@ -36,5 +27,5 @@ export const signUpSchema = Joi.object({
       .min(3)
       .max(30)
       .required()
-  })
-});
+  }).required()
+}).required();
