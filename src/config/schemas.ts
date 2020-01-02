@@ -1,5 +1,15 @@
 import Joi from "@hapi/joi";
 
+const username = Joi.string()
+  .alphanum()
+  .min(3)
+  .max(30)
+  .not(Joi.ref("password"))
+  .messages({
+    "any.invalid": "username and password must be different"
+  })
+  .required();
+
 export const DoctorProfileSchema = Joi.object({
   firstName: Joi.string()
     .alphanum()
@@ -33,11 +43,7 @@ export const PatientProfileSchema = Joi.object({
 }).required();
 
 export const signUpSchema = Joi.object({
-  username: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required(),
+  username,
 
   password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
 
@@ -53,15 +59,7 @@ export const signUpSchema = Joi.object({
 }).required();
 
 export const loginSchema = Joi.object({
-  username: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .not(Joi.ref("password"))
-    .messages({
-      "any.invalid": "username and password must be different"
-    })
-    .required(),
+  username,
 
   password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
 }).required();

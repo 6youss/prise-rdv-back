@@ -12,7 +12,7 @@ class UserController {
    * Get user info using a token
    */
   static async getUser(req: Request, res: Response, next: NextFunction) {
-    //get the user info from passport done()
+    //get the user info from passport's done() function
     const {
       userType: { value, targetId }
     } = req.user;
@@ -39,10 +39,6 @@ class UserController {
    * Sign in using email and password.
    */
   static async postLogin(req: Request, res: Response, next: NextFunction) {
-    /**
-     * @TODO
-     * Validation
-     */
     passport.authenticate("local", async (err: Error, user: IUser, info: IVerifyOptions) => {
       try {
         if (!user || err) {

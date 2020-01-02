@@ -11,6 +11,7 @@ declare global {
       JWT_REFRESH_SECRET: string;
       PORT: string;
       MONGODB_URI_LOCAL: string;
+      MONGODB_URI_LOCAL_TEST: string;
     }
   }
 }

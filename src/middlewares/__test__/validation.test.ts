@@ -6,8 +6,8 @@ describe("signup validation middleware", () => {
     const nextMock = jest.fn(() => {});
     const bodyMock = JSON.parse(`{
       "username": "admin",
-      "password": "admin",
-      "confirmPassword": "admin",
+      "password": "admins",
+      "confirmPassword": "admins",
       "userType": "patient",
       "profile": {
         "firstName":"test",
