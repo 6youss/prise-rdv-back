@@ -39,10 +39,10 @@ describe("Session controller", () => {
     const req = httpMocks.createRequest();
     req.body = bodyMock;
     const res = httpMocks.createResponse();
-    const nextMock = jest.fn(() => {});
-    const resStatusMock = jest.fn(res.sendStatus);
-    SessionController.postSession(req, res, nextMock);
-
-    expect(resStatusMock).toBeCalledWith(500);
+    const statusMock = jest.fn(res.status);
+    res.status = statusMock;
+    SessionController.postSession(req, res, () => {});
+    expect(statusMock).toBeCalled();
+    expect(statusMock).toBeCalledWith(200);
   });
 });
