@@ -1,11 +1,17 @@
 import SessionController from "../SessionController";
 import httpMocks from "node-mocks-http";
-import { clearTestsDatabase, initializeData, initializeTestsDatabase } from "../../setupTests";
+import {
+  clearTestsDatabase,
+  addDefaultUsers,
+  initializeTestsDatabase,
+  patientIdMock,
+  doctorIdMock
+} from "../../setupTests";
 import UserModel, { IUser } from "../../models/User";
 
 beforeAll(async () => {
   await initializeTestsDatabase();
-  await initializeData();
+  await addDefaultUsers();
 });
 
 afterAll(() => {
@@ -13,18 +19,20 @@ afterAll(() => {
 });
 
 describe("Session controller", () => {
-  let patientId, doctorId;
-
-  it("gets created patient", async () => {
-    const patient = await UserModel.findOne({ "userType.value": "doctor" });
+  it("gets patientId", async () => {
+    const patient = await UserModel.findById(patientIdMock);
     expect(patient).not.toBe(undefined);
-    patientId = patient._id;
+  });
+
+  it("gets doctorId", async () => {
+    const doctor = await UserModel.findById(doctorIdMock);
+    expect(doctor).not.toBe(undefined);
   });
 
   it("adds session", () => {
     const bodyMock = JSON.parse(`{
-      "patientId": 1,
-      "doctorId": 1,
+      "patientId": "${patientIdMock}",
+      "doctorId": "${doctorIdMock}",
       "date": "1/1/2020"
     }`);
 
