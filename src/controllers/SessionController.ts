@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Session from "../models/Session";
+import Session, { ISession } from "../models/Session";
 
 class SessionController {
   /**
@@ -8,11 +8,17 @@ class SessionController {
    */
   static async postSession(req: Request, res: any, next: NextFunction) {
     try {
-      // const { patientId, doctorId, date } = req.body;
+      const { patientId, doctorId, date } = req.body;
+      const session = await Session.create({
+        patient: patientId,
+        doctor: doctorId,
+        date: date
+      });
+      console.warn(session);
       res.status(200);
-      // Session.create({ patient: patientId, doctor: doctorId, date });
     } catch (error) {
-      return res.status(500);
+      console.error(error);
+      res.status(500);
     }
   }
 }

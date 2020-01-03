@@ -7,7 +7,7 @@ import DoctorModel, { IDoctor } from "./models/Doctor";
 export const doctorIdMock = new mongoose.Types.ObjectId().toHexString();
 export const patientIdMock = new mongoose.Types.ObjectId().toHexString();
 
-export function initializeTestsDatabase() {
+export function connectTestsDatabase() {
   return mongoose.connect(process.env.MONGODB_URI_LOCAL_TEST, {
     useCreateIndex: true,
     useNewUrlParser: true,

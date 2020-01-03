@@ -3,19 +3,16 @@ import httpMocks from "node-mocks-http";
 import {
   clearTestsDatabase,
   addDefaultUsers,
-  initializeTestsDatabase,
+  connectTestsDatabase,
   patientIdMock,
   doctorIdMock
 } from "../../setupTests";
 import UserModel, { IUser } from "../../models/User";
 
 beforeAll(async () => {
-  await initializeTestsDatabase();
+  await connectTestsDatabase();
+  await clearTestsDatabase();
   await addDefaultUsers();
-});
-
-afterAll(() => {
-  return clearTestsDatabase();
 });
 
 describe("Session controller", () => {
@@ -29,7 +26,7 @@ describe("Session controller", () => {
     expect(doctor).not.toBe(undefined);
   });
 
-  it("adds session", () => {
+  it("adds session", async () => {
     const bodyMock = JSON.parse(`{
       "patientId": "${patientIdMock}",
       "doctorId": "${doctorIdMock}",
@@ -41,7 +38,7 @@ describe("Session controller", () => {
     const res = httpMocks.createResponse();
     const statusMock = jest.fn(res.status);
     res.status = statusMock;
-    SessionController.postSession(req, res, () => {});
+    await SessionController.postSession(req, res, () => {});
     expect(statusMock).toBeCalled();
     expect(statusMock).toBeCalledWith(200);
   });
