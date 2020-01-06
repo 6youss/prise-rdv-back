@@ -1,5 +1,8 @@
-import SessionController from "../SessionController";
-import httpMocks from "node-mocks-http";
+import supertest from "supertest";
+import app from "../../server";
+
+const request = supertest(app);
+
 import {
   clearTestsDatabase,
   addDefaultUsers,
@@ -7,7 +10,7 @@ import {
   patientIdMock,
   doctorIdMock
 } from "../../setupTests";
-import UserModel, { IUser } from "../../models/User";
+import UserModel from "../../models/User";
 
 beforeAll(async () => {
   await connectTestsDatabase();
@@ -26,20 +29,13 @@ describe("Session controller", () => {
     expect(doctor).not.toBe(undefined);
   });
 
-  it("adds session", async () => {
-    const bodyMock = JSON.parse(`{
-      "patientId": "${patientIdMock}",
-      "doctorId": "${doctorIdMock}",
-      "date": "1/1/2020"
-    }`);
-
-    const req = httpMocks.createRequest();
-    req.body = bodyMock;
-    const res = httpMocks.createResponse();
-    const statusMock = jest.fn(res.status);
-    res.status = statusMock;
-    await SessionController.postSession(req, res, () => {});
-    expect(statusMock).toBeCalled();
-    expect(statusMock).toBeCalledWith(200);
+  it("adds session with valid data", async () => {
+    const res = await request.post("/api/session").send({
+      patientId: patientIdMock,
+      doctorId: doctorIdMock,
+      date: "1/1/2020"
+    });
+    expect(res.status).toEqual(201);
+    expect(res.body).toHaveProperty("session");
   });
 });

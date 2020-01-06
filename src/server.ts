@@ -21,3 +21,5 @@ mongooseConnection.once("open", function() {
     console.log("App server listening on port " + process.env.PORT);
   });
 });
+
+export default app;

@@ -14,11 +14,9 @@ class SessionController {
         doctor: doctorId,
         date: date
       });
-      console.warn(session);
-      res.status(200);
+      res.status(201).json({ session });
     } catch (error) {
-      console.error(error);
-      res.status(500);
+      res.sendStatus(500);
     }
   }
 }

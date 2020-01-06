@@ -55,11 +55,25 @@ export const signUpSchema = Joi.object({
     .valid(...["doctor", "patient"])
     .required(),
 
-  profile: Joi.object().required()
+  profile: Joi.when("userType", {
+    is: "doctor",
+    then: DoctorProfileSchema,
+    otherwise: PatientProfileSchema
+  }).required()
 }).required();
 
 export const loginSchema = Joi.object({
   username,
 
   password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
+}).required();
+
+const objectIdRegex = Joi.string()
+  .regex(/^[0-9a-fA-F]{24}$/)
+  .required();
+
+export const sessionSchema = Joi.object({
+  patientId: objectIdRegex,
+  doctorId: objectIdRegex,
+  date: Joi.date().required()
 }).required();

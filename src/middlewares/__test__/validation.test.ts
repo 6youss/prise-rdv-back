@@ -1,7 +1,7 @@
 import { validateSignUpBody } from "../validation";
 import httpMocks from "node-mocks-http";
 
-describe("signup validation middleware", () => {
+describe("Signup validation middleware", () => {
   it("with valid body", () => {
     const nextMock = jest.fn(() => {});
     const bodyMock = JSON.parse(`{
@@ -44,4 +44,12 @@ describe("signup validation middleware", () => {
     validateSignUpBody(req, res, nextMock);
     expect(nextMock).toBeCalledTimes(0);
   });
+});
+
+describe("Session validation middleware", () => {
+  it("with valid body", () => {});
+
+  it("with invalid body", () => {});
+
+  it("without sending body", () => {});
 });
