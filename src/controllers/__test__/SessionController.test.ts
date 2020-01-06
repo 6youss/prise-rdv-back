@@ -10,7 +10,7 @@ import {
   patientIdMock,
   doctorIdMock
 } from "../../setupTests";
-import UserModel from "../../models/User";
+import Session from "../../models/Session";
 
 beforeAll(async () => {
   await connectTestsDatabase();
@@ -19,15 +19,7 @@ beforeAll(async () => {
 });
 
 describe("Session controller", () => {
-  it("gets patientId", async () => {
-    const patient = await UserModel.findById(patientIdMock);
-    expect(patient).not.toBe(undefined);
-  });
-
-  it("gets doctorId", async () => {
-    const doctor = await UserModel.findById(doctorIdMock);
-    expect(doctor).not.toBe(undefined);
-  });
+  it("check for session availability", async () => {});
 
   it("adds session with valid data", async () => {
     const res = await request.post("/api/session").send({

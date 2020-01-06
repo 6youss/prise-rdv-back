@@ -3,6 +3,23 @@ import { Request, Response, NextFunction } from "express";
 import httpMocks from "node-mocks-http";
 import { patientIdMock, doctorIdMock } from "../../setupTests";
 
+function testValidator(
+  validator: (req: Request, res: Response, next: NextFunction) => {},
+  body: any,
+  shouldBeValid: boolean
+) {
+  const nextMock = jest.fn(() => {});
+  const req = httpMocks.createRequest();
+  req.body = body;
+
+  const res = httpMocks.createResponse();
+
+  validator(req, res, nextMock);
+
+  if (shouldBeValid) expect(nextMock).toBeCalledTimes(1);
+  else expect(nextMock).toBeCalledTimes(0);
+}
+
 describe("Signup validation middleware", () => {
   it("with valid body", () => {
     testValidator(
@@ -67,20 +84,3 @@ describe("Session validation middleware", () => {
     testValidator(validateSessionBody, undefined, false);
   });
 });
-
-function testValidator(
-  validator: (req: Request, res: Response, next: NextFunction) => {},
-  body: any,
-  shouldBeValid: boolean
-) {
-  const nextMock = jest.fn(() => {});
-  const req = httpMocks.createRequest();
-  req.body = body;
-
-  const res = httpMocks.createResponse();
-
-  validator(req, res, nextMock);
-
-  if (shouldBeValid) expect(nextMock).toBeCalledTimes(1);
-  else expect(nextMock).toBeCalledTimes(0);
-}
