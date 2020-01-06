@@ -1,55 +1,86 @@
-import { validateSignUpBody } from "../validation";
+import { validateSignUpBody, validateSessionBody } from "../validation";
+import { Request, Response, NextFunction } from "express";
 import httpMocks from "node-mocks-http";
+import { patientIdMock, doctorIdMock } from "../../setupTests";
 
 describe("Signup validation middleware", () => {
   it("with valid body", () => {
-    const nextMock = jest.fn(() => {});
-    const bodyMock = JSON.parse(`{
-      "username": "admin",
-      "password": "admins",
-      "confirmPassword": "admins",
-      "userType": "patient",
-      "profile": {
-        "firstName":"test",
-        "lastName":"test"
-      }
-    }`);
-    const req = httpMocks.createRequest();
-    req.body = bodyMock;
-    const res = httpMocks.createResponse();
-    validateSignUpBody(req, res, nextMock);
-    expect(nextMock).toBeCalled();
+    testValidator(
+      validateSignUpBody,
+      {
+        username: "admin",
+        password: "admins",
+        confirmPassword: "admins",
+        userType: "patient",
+        profile: {
+          firstName: "test",
+          lastName: "test"
+        }
+      },
+      true
+    );
   });
 
   it("with invalid body", () => {
-    const nextMock = jest.fn(() => {});
-    const bodyMock = JSON.parse(`{
-      "username": "admin",
-      "password": "admin",
-      "confirmPassword": "admin",
-      "userType": "patient"
-    }`);
-    const req = httpMocks.createRequest();
-    req.body = bodyMock;
-    const res = httpMocks.createResponse();
-    validateSignUpBody(req, res, nextMock);
-    expect(nextMock).toBeCalledTimes(0);
+    testValidator(
+      validateSignUpBody,
+      {
+        username: "admin",
+        password: "admin",
+        confirmPassword: "admin",
+        userType: "patient"
+      },
+      false
+    );
   });
 
   it("without sending body", () => {
-    const nextMock = jest.fn(() => {});
-    const req = httpMocks.createRequest();
-    req.body = undefined;
-    const res = httpMocks.createResponse();
-    validateSignUpBody(req, res, nextMock);
-    expect(nextMock).toBeCalledTimes(0);
+    testValidator(validateSignUpBody, undefined, false);
   });
 });
 
 describe("Session validation middleware", () => {
-  it("with valid body", () => {});
+  it("with valid body", () => {
+    testValidator(
+      validateSessionBody,
+      {
+        patientId: patientIdMock,
+        doctorId: doctorIdMock,
+        date: new Date()
+      },
+      true
+    );
+  });
 
-  it("with invalid body", () => {});
+  it("with invalid body", () => {
+    testValidator(
+      validateSessionBody,
+      {
+        patientId: patientIdMock,
+        doctorId: doctorIdMock
+      },
+      false
+    );
+  });
 
-  it("without sending body", () => {});
+  it("without sending body", () => {
+    testValidator(validateSessionBody, undefined, false);
+  });
 });
+
+function testValidator(
+  validator: (req: Request, res: Response, next: NextFunction) => {},
+  body: any,
+  shouldBeValid: boolean
+) {
+  const nextMock = jest.fn(() => {});
+  const req = httpMocks.createRequest();
+  req.body = body;
+
+  const res = httpMocks.createResponse();
+
+  validator(req, res, nextMock);
+
+  if (shouldBeValid) expect(nextMock).toBeCalledTimes(1);
+  else expect(nextMock).toBeCalledTimes(0);
+}
