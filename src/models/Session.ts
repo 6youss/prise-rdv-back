@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 const { ObjectId } = mongoose.Types;
 
-type isSessionAvailableFunction = (doctorId: string, patientId: string, date: Date) => Promise<boolean>;
+type isSessionAvailableFunction = () => Promise<boolean>;
 
 export interface ISession extends Document {
   patient: Schema.Types.ObjectId;
@@ -10,15 +10,15 @@ export interface ISession extends Document {
   isSessionAvailable: isSessionAvailableFunction;
 }
 
-const isSessionAvailable: isSessionAvailableFunction = async function(doctorId, patientId, date) {
-  const dateDebut = new Date(date.getTime() - 20 * 60 * 1000);
-  const dateFin = new Date(date.getTime() + 20 * 60 * 1000);
+const isSessionAvailable: isSessionAvailableFunction = async function() {
+  const dateDebut = new Date(this.date.getTime() - 20 * 60 * 1000);
+  const dateFin = new Date(this.date.getTime() + 20 * 60 * 1000);
 
   const sessionsCount = await Session.find({
     $or: [
       {
         $and: [
-          { doctor: new ObjectId(doctorId) },
+          { doctor: this.doctorId },
           {
             $and: [{ date: { $gt: dateDebut } }, { date: { $lt: dateFin } }]
           }
@@ -26,25 +26,25 @@ const isSessionAvailable: isSessionAvailableFunction = async function(doctorId, 
       },
       {
         $and: [
-          { patient: ObjectId(patientId) },
+          { patient: this.patientId },
           {
             $and: [{ date: { $gt: dateDebut } }, { date: { $lt: dateFin } }]
           }
         ]
       }
     ]
-  }).count();
+  }).countDocuments();
   return sessionsCount === 0;
 };
 
 const SessionSchema = new Schema({
-  patient: { type: Schema.Types.ObjectId, ref: "Patient" },
-  doctor: { type: Schema.Types.ObjectId, ref: "Doctor" },
-  date: Date
+  patient: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
+  doctor: { type: Schema.Types.ObjectId, ref: "Doctor", required: true },
+  date: { type: Date, required: true }
 });
 
 SessionSchema.methods.isSessionAvailable = isSessionAvailable;
 
-const Session: Model<ISession> = mongoose.model<ISession>("Session", SessionSchema);
+const Session = mongoose.model<ISession>("Session", SessionSchema);
 
 export default Session;
