@@ -25,11 +25,15 @@ afterAll(async () => {
 
 describe("Session controller", () => {
   describe("check for session availability", () => {
+    it("with invalid params", async () => {
+      const newSessionDate = new Date();
+      expect(await isSessionAvailable(patientIdMock + "sdqd", doctorIdMock + "sqdqsd", newSessionDate)).toBe(false);
+      expect(await isSessionAvailable(undefined, undefined, newSessionDate)).toBe(false);
+    });
     it("with available date", async () => {
       const available = await isSessionAvailable(patientIdMock, doctorIdMock, new Date());
       expect(available).toBe(true);
     });
-
     it("with unavailable date", async () => {
       //create session with specific date
       const existingSessionDate = new Date();
@@ -38,7 +42,6 @@ describe("Session controller", () => {
         doctor: doctorIdMock,
         date: existingSessionDate
       });
-
       const newSessionDate = new Date(existingSessionDate.getTime() - 10 * 60 * 1000);
       const available = await isSessionAvailable(patientIdMock, doctorIdMock, newSessionDate);
       expect(available).toBe(false);

@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import Session, { ISession, isSessionAvailable } from "../models/Session";
-import Patient from "../models/Patient";
-import Doctor from "../models/Doctor";
 
 class SessionController {
   /**
@@ -11,17 +9,15 @@ class SessionController {
   static async postSession(req: Request, res: Response, next: NextFunction) {
     try {
       const { patientId, doctorId, date } = req.body;
-
-      const patient = await Patient.findById(patientId);
-      const doctor = await Doctor.findById(doctorId);
       const sessionAvailable = await isSessionAvailable(patientId, doctorId, date);
-      if (!patient || !doctor || !sessionAvailable) return res.sendStatus(400);
+      if (!sessionAvailable) return res.sendStatus(400);
 
       const session = await Session.create({
         patient: patientId,
         doctor: doctorId,
         date: date
       });
+
       res.status(201).json({ session });
     } catch (error) {
       res.sendStatus(500);
