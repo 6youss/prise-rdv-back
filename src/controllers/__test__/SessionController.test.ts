@@ -11,8 +11,7 @@ import {
   doctorIdMock
 } from "../../setupTests";
 
-import { isSessionAvailable } from "../SessionController";
-import Session, { ISession } from "../../models/Session";
+import Session, { ISession, isSessionAvailable } from "../../models/Session";
 
 beforeAll(async () => {
   await connectTestsDatabase();
@@ -27,19 +26,20 @@ afterAll(async () => {
 describe("Session controller", () => {
   describe("check for session availability", () => {
     it("with available date", async () => {
-      // const available = await isSessionAvailable(patientIdMock, doctorIdMock, new Date());
-      // expect(available).toBe(true);
+      const available = await isSessionAvailable(patientIdMock, doctorIdMock, new Date());
+      expect(available).toBe(true);
     });
 
     it("with unavailable date", async () => {
+      //create session with specific date
       const existingSessionDate = new Date();
-      const newSessionDate = new Date(existingSessionDate.getTime() - 10 * 60 * 1000);
-      //create session to try adding in the same time
       await Session.create({
         patient: patientIdMock,
         doctor: doctorIdMock,
         date: existingSessionDate
       });
+
+      const newSessionDate = new Date(existingSessionDate.getTime() - 10 * 60 * 1000);
       const available = await isSessionAvailable(patientIdMock, doctorIdMock, newSessionDate);
       expect(available).toBe(false);
     });

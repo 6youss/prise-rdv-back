@@ -1,24 +1,27 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
-const { ObjectId } = mongoose.Types;
+import mongoose, { Schema, Document } from "mongoose";
 
-type isSessionAvailableFunction = () => Promise<boolean>;
+type isSessionAvailableFunction = (patientId: string, doctorId: string, date: Date) => Promise<boolean>;
 
 export interface ISession extends Document {
   patient: Schema.Types.ObjectId;
   doctor: Schema.Types.ObjectId;
   date: Date;
-  isSessionAvailable: isSessionAvailableFunction;
 }
 
-const isSessionAvailable: isSessionAvailableFunction = async function() {
-  const dateDebut = new Date(this.date.getTime() - 20 * 60 * 1000);
-  const dateFin = new Date(this.date.getTime() + 20 * 60 * 1000);
+export const isSessionAvailable: isSessionAvailableFunction = async function(
+  patientId: string,
+  doctorId: string,
+  date: Date
+) {
+  const dateDebut = new Date(date.getTime() - 30 * 60 * 1000);
+  const dateFin = new Date(date.getTime() + 30 * 60 * 1000);
+  // console.warn({ "date debut": dateDebut, date: date, "date fin": dateFin });
 
   const sessionsCount = await Session.find({
     $or: [
       {
         $and: [
-          { doctor: this.doctorId },
+          { doctor: doctorId },
           {
             $and: [{ date: { $gt: dateDebut } }, { date: { $lt: dateFin } }]
           }
@@ -26,7 +29,7 @@ const isSessionAvailable: isSessionAvailableFunction = async function() {
       },
       {
         $and: [
-          { patient: this.patientId },
+          { patient: patientId },
           {
             $and: [{ date: { $gt: dateDebut } }, { date: { $lt: dateFin } }]
           }
@@ -42,8 +45,6 @@ const SessionSchema = new Schema({
   doctor: { type: Schema.Types.ObjectId, ref: "Doctor", required: true },
   date: { type: Date, required: true }
 });
-
-SessionSchema.methods.isSessionAvailable = isSessionAvailable;
 
 const Session = mongoose.model<ISession>("Session", SessionSchema);
 

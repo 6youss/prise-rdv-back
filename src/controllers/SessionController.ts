@@ -1,16 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import Session, { ISession } from "../models/Session";
+import Session, { ISession, isSessionAvailable } from "../models/Session";
 import Patient from "../models/Patient";
 import Doctor from "../models/Doctor";
-
-export async function isSessionAvailable(patientId: string, doctorId: string, date: Date): Promise<boolean> {
-  const session = new Session({
-    patient: patientId,
-    doctor: doctorId,
-    date
-  });
-  return await session.isSessionAvailable();
-}
 
 class SessionController {
   /**
