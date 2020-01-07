@@ -13,7 +13,6 @@ class SessionController {
       const patient = await UserModel.findById(patientId);
       const doctor = await UserModel.findById(doctorId);
       if (!patient || !doctor) return res.sendStatus(400);
-
       const session = await Session.create({
         patient: patientId,
         doctor: doctorId,

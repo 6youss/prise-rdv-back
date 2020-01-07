@@ -3,12 +3,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import routes from "./routes";
-import mongooseConnection from "./models/index";
+import dbConnection from "./models/dbConnection";
 import configPassport from "./config/passport";
 
 const app = express();
 
-mongooseConnection.once("open", function() {
+dbConnection.then(function() {
   app.use(cors());
   app.use(express.static("./public"));
   app.use(bodyParser.json());

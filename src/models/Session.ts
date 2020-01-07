@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 const { ObjectId } = mongoose.Types;
 
 type isSessionAvailableFunction = (doctorId: string, patientId: string, date: Date) => Promise<boolean>;
@@ -45,6 +45,6 @@ const SessionSchema = new Schema({
 
 SessionSchema.methods.isSessionAvailable = isSessionAvailable;
 
-const Session = mongoose.model<ISession>("Session", SessionSchema);
+const Session: Model<ISession> = mongoose.model<ISession>("Session", SessionSchema);
 
 export default Session;

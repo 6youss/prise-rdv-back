@@ -10,16 +10,22 @@ import {
   patientIdMock,
   doctorIdMock
 } from "../../setupTests";
-import Session from "../../models/Session";
+// import Session from "../../models/Session";
 
 beforeAll(async () => {
+  process.env.NODE_ENV = "test";
   await connectTestsDatabase();
-  await clearTestsDatabase();
   await addDefaultUsers();
 });
 
+afterAll(async () => {
+  await clearTestsDatabase();
+});
+
 describe("Session controller", () => {
-  it("check for session availability", async () => {});
+  it("check for session availability", async () => {
+    // Session.isSessionAvailable
+  });
 
   it("adds session with valid data", async () => {
     const res = await request.post("/api/session").send({
