@@ -75,5 +75,7 @@ const objectIdRegex = Joi.string()
 export const sessionSchema = Joi.object({
   patientId: objectIdRegex,
   doctorId: objectIdRegex,
-  date: Joi.date().required()
+  date: Joi.date()
+    .iso()
+    .required()
 }).required();

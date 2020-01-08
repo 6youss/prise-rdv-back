@@ -8,4 +8,3 @@ router.get("/", DoctorController.getDoctors);
 router.get("/:searchValue", DoctorController.getSearchedDoctors);
 
 export default router;
-    

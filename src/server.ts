@@ -8,7 +8,7 @@ import configPassport from "./config/passport";
 
 const app = express();
 
-dbConnection.then(function() {
+export const server = dbConnection.then(() => {
   app.use(cors());
   app.use(express.static("./public"));
   app.use(bodyParser.json());
@@ -17,7 +17,7 @@ dbConnection.then(function() {
   // Routes
   app.use("/api", routes);
 
-  app.listen(process.env.PORT, () => {
+  return app.listen(process.env.PORT, () => {
     console.log("App server listening on port " + process.env.PORT);
   });
 });

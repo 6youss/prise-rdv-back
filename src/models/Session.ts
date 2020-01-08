@@ -15,6 +15,7 @@ export const isSessionAvailable: isSessionAvailableFunction = async function(
 ) {
   if (!mongoose.Types.ObjectId.isValid(patientId)) return false;
   if (!mongoose.Types.ObjectId.isValid(doctorId)) return false;
+  if (!(date instanceof Date)) return false;
 
   const dateDebut = new Date(date.getTime() - 30 * 60 * 1000);
   const dateFin = new Date(date.getTime() + 30 * 60 * 1000);

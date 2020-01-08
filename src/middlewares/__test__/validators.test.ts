@@ -1,4 +1,4 @@
-import { validateSignUpBody, validateSessionBody } from "../validation";
+import { validateSignUpBody, validateSessionBody } from "../validators";
 import { Request, Response, NextFunction } from "express";
 import httpMocks from "node-mocks-http";
 import { patientIdMock, doctorIdMock } from "../../setupTests";

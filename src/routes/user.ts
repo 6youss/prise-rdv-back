@@ -1,7 +1,7 @@
 import { Router } from "express";
 import UserController from "../controllers/UserController";
 import passport from "passport";
-import { validateSignUpBody, validateLoginBody } from "../middlewares/validation";
+import { validateSignUpBody, validateLoginBody } from "../middlewares/validators";
 
 const router = Router();
 

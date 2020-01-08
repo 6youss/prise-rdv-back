@@ -1,12 +1,13 @@
 require("dotenv").config();
-import mongoose, { Schema } from "mongoose";
-import UserModel, { IUser } from "./models/User";
+import mongoose from "mongoose";
+import UserModel from "./models/User";
 import PatientModel, { IPatient } from "./models/Patient";
 import DoctorModel, { IDoctor } from "./models/Doctor";
 import dbConnection from "./models/dbConnection";
 
 export const doctorIdMock = new mongoose.Types.ObjectId().toHexString();
 export const patientIdMock = new mongoose.Types.ObjectId().toHexString();
+export let patientToken: string;
 
 export function connectTestsDatabase() {
   return dbConnection;
