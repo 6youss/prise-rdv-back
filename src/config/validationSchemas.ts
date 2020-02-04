@@ -23,6 +23,16 @@ export const DoctorProfileSchema = Joi.object({
     .max(30)
     .required(),
 
+  address: Joi.string()
+    .min(8)
+    .max(50)
+    .required(),
+
+  phone: Joi.string()
+    .trim()
+    .regex(/^[0-9]{7,10}$/)
+    .required(),
+
   holidays: Joi.array()
     .items(Joi.date())
     .required()

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { signUpSchema, loginSchema, sessionSchema } from "../config/schemas";
+import { signUpSchema, loginSchema, sessionSchema } from "../config/validationSchemas";
 
 export function validateSignUpBody(req: Request, res: Response, next: NextFunction) {
   const { error } = signUpSchema.validate(req.body);

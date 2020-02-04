@@ -11,7 +11,7 @@ export interface IDoctor extends Document {
 const DoctorSchema = new Schema({
   firstName: String,
   lastName: String,
-  phone: Number,
+  phone: { type: String, required: true, unique: true },
   address: String,
   holidays: [Date]
 });
