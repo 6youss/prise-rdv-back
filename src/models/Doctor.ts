@@ -3,12 +3,16 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IDoctor extends Document {
   firstName: string;
   lastName: string;
+  phone: number;
+  address: string;
   holidays: [Date];
 }
 
 const DoctorSchema = new Schema({
   firstName: String,
   lastName: String,
+  phone: Number,
+  address: String,
   holidays: [Date]
 });
 

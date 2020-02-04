@@ -9,7 +9,7 @@ class SessionController {
   static async getDoctorSessions(req: Request, res: Response, next: NextFunction) {
     try {
       const { doctorId } = req.params;
-      const doctorSessions = Session.findById({ doctor: doctorId });
+      const doctorSessions = Session.findById({ doctor: doctorId }).select("_id doctor patient date");
       res.status(201).json({ sessions: doctorSessions });
     } catch (error) {
       res.sendStatus(500);

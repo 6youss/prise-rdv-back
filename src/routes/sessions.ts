@@ -6,6 +6,6 @@ import passport from "passport";
 const router = Router();
 
 router.post("/", passport.authenticate("jwt", { session: false }), validateSessionBody, SessionController.postSession);
-router.get("/doctor/:doctorId", passport.authenticate("jwt", { session: false }), SessionController.getDoctorSessions);
+router.get("/doctor/:doctorId", SessionController.getDoctorSessions);
 
 export default router;
