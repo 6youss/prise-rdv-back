@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { defaultUsers } from "../../setupTests";
+import { defaultUsers } from "../../__tests__/setupTests";
 
 export const doctorTests = (request: supertest.SuperTest<supertest.Test>) => () => {
   describe("doctor integration", () => {

@@ -1,9 +1,9 @@
-require("dotenv").config();
+require("dotenv").config({ path: ".env.test" });
 import mongoose from "mongoose";
-import UserModel, { IUser } from "./models/User";
-import PatientModel, { IPatient } from "./models/Patient";
-import DoctorModel, { IDoctor } from "./models/Doctor";
-import dbConnection from "./models/dbConnection";
+import UserModel, { IUser } from "../models/User";
+import PatientModel, { IPatient } from "../models/Patient";
+import DoctorModel, { IDoctor } from "../models/Doctor";
+import dbConnection from "../models/dbConnection";
 
 export const doctorIdMock = new mongoose.Types.ObjectId().toHexString();
 export const patientIdMock = new mongoose.Types.ObjectId().toHexString();

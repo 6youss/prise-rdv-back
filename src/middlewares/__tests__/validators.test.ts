@@ -1,7 +1,7 @@
 import { validateSignUpBody, validateSessionBody } from "../validators";
 import { Request, Response, NextFunction } from "express";
 import httpMocks from "node-mocks-http";
-import { patientIdMock, doctorIdMock } from "../../setupTests";
+import { patientIdMock, doctorIdMock } from "../../__tests__/setupTests";
 
 function testValidator(
   validator: (req: Request, res: Response, next: NextFunction) => {},

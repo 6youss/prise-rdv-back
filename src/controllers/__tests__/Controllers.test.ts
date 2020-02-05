@@ -5,7 +5,7 @@ import {
   connectTestsDatabase,
   clearTestsDatabase,
   addDefaultUsers
-} from "../../setupTests";
+} from "../../__tests__/setupTests";
 import app, { server } from "../../server";
 import supertest from "supertest";
 const request = supertest(app);

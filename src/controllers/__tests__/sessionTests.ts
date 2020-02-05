@@ -1,4 +1,4 @@
-import { patientIdMock, doctorIdMock } from "../../setupTests";
+import { patientIdMock, doctorIdMock } from "../../__tests__/setupTests";
 import supertest from "supertest";
 import Session, { isSessionAvailable } from "../../models/Session";
 
