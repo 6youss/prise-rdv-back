@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IDoctor extends Document {
   firstName: string;
   lastName: string;
-  phone: number;
+  phone: string;
   address: string;
   holidays: [Date];
 }

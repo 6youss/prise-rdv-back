@@ -1,21 +1,10 @@
-import {
-  clearTestsDatabase,
-  addDefaultUsers,
-  connectTestsDatabase,
-  patientIdMock,
-  doctorIdMock
-} from "../../setupTests";
+import { patientIdMock, doctorIdMock } from "../../setupTests";
 import supertest from "supertest";
-import app, { server } from "../../server";
 import Session, { isSessionAvailable } from "../../models/Session";
-const request = supertest(app);
 
-describe("session controller", () => {
+export const sessionTests = (request: supertest.SuperTest<supertest.Test>) => () => {
   let patientToken: string;
   beforeAll(async () => {
-    await connectTestsDatabase();
-    await clearTestsDatabase();
-    await addDefaultUsers();
     const res = await request.post("/api/user/login").send({
       username: "patient",
       password: "0000"
@@ -24,21 +13,18 @@ describe("session controller", () => {
     expect(res.body).toHaveProperty("accessToken");
     patientToken = res.body.accessToken;
   });
-  afterAll(async done => {
-    (await server).close(done);
-  });
 
   describe("check for session availability", () => {
-    it("should be unavailable session with invalid params", async () => {
+    test("should be unavailable session with invalid params", async () => {
       const newSessionDate = new Date();
       expect(await isSessionAvailable(patientIdMock + "sdqd", doctorIdMock + "sqdqsd", newSessionDate)).toBe(false);
       expect(await isSessionAvailable(undefined, undefined, undefined)).toBe(false);
     });
-    it("should be available session", async () => {
+    test("should be available session", async () => {
       const available = await isSessionAvailable(patientIdMock, doctorIdMock, new Date());
       expect(available).toBe(true);
     });
-    it("should be unavailable session", async () => {
+    test("should be unavailable session", async () => {
       //create session with specific date
       const existingSessionDate = new Date();
       await Session.create({
@@ -53,7 +39,7 @@ describe("session controller", () => {
   });
 
   describe("add session to server", () => {
-    it("should add session with valid data", async () => {
+    test("should add session with valid data", async () => {
       const availableSessionDate = new Date(new Date().getTime() + 60 * 60 * 1000); //current time + 60mn
       const res = await request
         .post("/api/sessions")
@@ -67,4 +53,4 @@ describe("session controller", () => {
       expect(res.body).toHaveProperty("session");
     });
   });
-});
+};
