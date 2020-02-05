@@ -1,7 +1,7 @@
 import { validateSignUpBody, validateSessionBody } from "../validators";
 import { Request, Response, NextFunction } from "express";
 import httpMocks from "node-mocks-http";
-import { patientIdMock, doctorIdMock } from "../../__tests__/setupTests";
+import { defaultPatientIdMock, defaultDoctorIdMock } from "../../utils/testUtils";
 
 function testValidator(
   validator: (req: Request, res: Response, next: NextFunction) => {},
@@ -61,8 +61,8 @@ describe("Session validation middleware", () => {
     testValidator(
       validateSessionBody,
       {
-        patientId: patientIdMock,
-        doctorId: doctorIdMock,
+        patientId: defaultPatientIdMock,
+        doctorId: defaultDoctorIdMock,
         date: new Date()
       },
       true
@@ -73,8 +73,8 @@ describe("Session validation middleware", () => {
     testValidator(
       validateSessionBody,
       {
-        patientId: patientIdMock,
-        doctorId: doctorIdMock
+        patientId: defaultPatientIdMock,
+        doctorId: defaultDoctorIdMock
       },
       false
     );

@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import routes from "./routes";
 import dbConnection from "./models/dbConnection";
-import configPassport from "./config/passport";
+import configPassport from "./passport";
 
 const app = express();
 

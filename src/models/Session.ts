@@ -19,7 +19,6 @@ export const isSessionAvailable: isSessionAvailableFunction = async function(
 
   const dateDebut = new Date(date.getTime() - 30 * 60 * 1000);
   const dateFin = new Date(date.getTime() + 30 * 60 * 1000);
-  // console.warn({ "date debut": dateDebut, date: date, "date fin": dateFin });
 
   const sessionsCount = await Session.find({
     $or: [

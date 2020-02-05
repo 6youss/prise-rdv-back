@@ -20,13 +20,19 @@ class DoctorController {
    * GET /doctor/:phone
    * Get doctor by phone number
    */
-  static async getDoctorByPhone(req: Request, res: Response, next: NextFunction) {
+  static async getDoctorByPhone(req: Request, res: Response) {
     const phone = req.params.phone;
     try {
-      const doctor = await Doctor.find({ phone }).select("_id firstName lastName");
-      return res.json({
-        doctor
-      });
+      const doctor = await Doctor.findOne({ phone }).select("_id firstName lastName phone address");
+      if (doctor) {
+        return res.status(200).json({
+          doctor
+        });
+      } else {
+        return res.status(404).json({
+          message: "Doctor not found"
+        });
+      }
     } catch (error) {
       return res.sendStatus(500);
     }
@@ -36,7 +42,7 @@ class DoctorController {
    * GET /doctor/:saerchValue
    * Get searched Doctors
    */
-  static async getSearchedDoctors(req: Request, res: Response, next: NextFunction) {
+  static async getSearchedDoctors(req: Request, res: Response) {
     const searchValue = req.params.searchValue;
 
     if (!searchValue) return res.status(422).json({ message: "Invalid Search Text" });

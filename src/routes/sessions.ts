@@ -1,11 +1,11 @@
 import { Router } from "express";
 import SessionController from "../controllers/SessionController";
-import { validateSessionBody } from "../middlewares/validators";
+import { validateSessionBody, validateDoctorIdParam } from "../middlewares/validators";
 import passport from "passport";
 
 const router = Router();
 
 router.post("/", passport.authenticate("jwt", { session: false }), validateSessionBody, SessionController.postSession);
-router.get("/doctor/:doctorId", SessionController.getDoctorSessions);
+router.get("/doctor/:doctorId", validateDoctorIdParam, SessionController.getDoctorSessions);
 
 export default router;

@@ -1,20 +1,31 @@
 import { Request, Response, NextFunction } from "express";
-import { signUpSchema, loginSchema, sessionSchema } from "../config/validationSchemas";
+import { signUpSchema, loginSchema, sessionSchema, phoneSchema, objectIdSchema } from "./validationSchemas";
+
+export function validateDoctorIdParam(req: Request, res: Response, next: NextFunction) {
+  const { error } = objectIdSchema.validate(req.params.doctorId);
+  if (error) return res.status(412).json({ message: error.message });
+  next();
+}
+export function validatePhoneParam(req: Request, res: Response, next: NextFunction) {
+  const { error } = phoneSchema.validate(req.params.phone);
+  if (error) return res.status(412).json({ message: error.message });
+  next();
+}
 
 export function validateSignUpBody(req: Request, res: Response, next: NextFunction) {
   const { error } = signUpSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.message });
+  if (error) return res.status(412).json({ message: error.message });
   next();
 }
 
 export function validateLoginBody(req: Request, res: Response, next: NextFunction) {
   const { error } = loginSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.message });
+  if (error) return res.status(412).json({ message: error.message });
   next();
 }
 
 export function validateSessionBody(req: Request, res: Response, next: NextFunction) {
   const { error } = sessionSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.message });
+  if (error) return res.status(412).json({ message: error.message });
   next();
 }

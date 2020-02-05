@@ -24,8 +24,14 @@ const lastName = Joi.string()
   .min(3)
   .max(30)
   .required();
-const objectIdRegex = Joi.string()
+
+export const objectIdSchema = Joi.string()
   .regex(/^[0-9a-fA-F]{24}$/)
+  .required();
+
+export const phoneSchema = Joi.string()
+  .trim()
+  .regex(/^[0-9]{7,10}$/)
   .required();
 
 //VALIDATION SCHEMAS
@@ -39,10 +45,7 @@ export const DoctorProfileSchema = Joi.object({
     .max(50)
     .required(),
 
-  phone: Joi.string()
-    .trim()
-    .regex(/^[0-9]{7,10}$/)
-    .required(),
+  phone: phoneSchema,
 
   holidays: Joi.array()
     .items(Joi.date())
@@ -81,8 +84,8 @@ export const loginSchema = Joi.object({
 }).required();
 
 export const sessionSchema = Joi.object({
-  patientId: objectIdRegex,
-  doctorId: objectIdRegex,
+  patientId: objectIdSchema,
+  doctorId: objectIdSchema,
   date: Joi.date()
     .iso()
     .required()
