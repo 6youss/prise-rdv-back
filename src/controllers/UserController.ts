@@ -27,7 +27,7 @@ class UserController {
           return res.status(200).json({ patient });
         }
         default:
-          return res.status(422).json({ message: "Wrong user type." });
+          return res.status(412).json({ message: "Wrong user type." });
       }
     } catch (error) {
       return res.sendStatus(500);
@@ -53,9 +53,10 @@ class UserController {
         const refreshToken = jwt.sign(userPayload, process.env.JWT_REFRESH_SECRET);
         user.refreshToken = refreshToken;
         await user.save();
+
         return res.json({
           message: "User logged in successfuly.",
-          user: userPayload,
+          ...userPayload,
           accessToken,
           refreshToken
         });
@@ -99,8 +100,11 @@ class UserController {
         case "doctor": {
           const doctor = await Doctor.create({
             firstName: req.body.profile.firstName,
-            lastName: req.body.profile.lastName
-          });
+            lastName: req.body.profile.lastName,
+            address: req.body.profile.address,
+            holidays: req.body.profile.holidays,
+            phone: req.body.profile.phone
+          } as IDoctor);
           user.userType = { value: "doctor", targetId: doctor._id };
           break;
         }

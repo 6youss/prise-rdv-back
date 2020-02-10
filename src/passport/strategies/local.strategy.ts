@@ -13,7 +13,7 @@ export default new Strategy(
         return done(err);
       }
       if (!user) {
-        return done(undefined, false, { message: `User ${username} not found.` });
+        return done(undefined, false, { message: `User "${username}" does not exist.` });
       }
       user.comparePassword(password, (err: Error, isMatch: boolean) => {
         if (err) {

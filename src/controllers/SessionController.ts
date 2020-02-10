@@ -2,13 +2,14 @@ import { Request, Response, NextFunction } from "express";
 
 import Session, { isSessionAvailable } from "../models/Session";
 import Doctor from "../models/Doctor";
+import Patient from "../models/Patient";
 
 class SessionController {
   /**
    * GET /sessions/doctor/:doctorId
    * Get the doctor's sessions
    */
-  static async getDoctorSessions(req: Request, res: Response, next: NextFunction) {
+  static async getDoctorSessions(req: Request, res: Response) {
     try {
       const { doctorId } = req.params;
       const doc = await Doctor.findById(doctorId);
@@ -23,12 +24,31 @@ class SessionController {
       res.sendStatus(500);
     }
   }
+  /**
+   * GET /sessions/patient/:patientId
+   * Get the patient's sessions
+   */
+  static async getPatientSessions(req: Request, res: Response) {
+    try {
+      const { patientId } = req.params;
+      const patient = await Patient.findById(patientId);
+      if (!patient) return res.sendStatus(404);
+      const patientSessions = await Session.find({ patient: patientId }).select("_id doctor patient date");
+      if (patientSessions.length === 0) {
+        res.sendStatus(204);
+      } else {
+        res.status(200).json({ sessions: patientSessions });
+      }
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  }
 
   /**
    * POST /sessions
    * Add a new session for the user.
    */
-  static async postSession(req: Request, res: Response, next: NextFunction) {
+  static async postSession(req: Request, res: Response) {
     try {
       const { patientId, doctorId, date } = req.body;
       const parsedDate = new Date(date);
