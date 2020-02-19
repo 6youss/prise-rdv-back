@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-
+import { Request, Response } from "express";
+import mongoose from "mongoose";
 import Session, { isSessionDoctorAvailable } from "../models/Session";
 import Doctor from "../models/Doctor";
 import Patient from "../models/Patient";
@@ -15,7 +15,7 @@ class SessionController {
       const sessionDetails = await Session.aggregate([
         {
           $match: {
-            _id: sessionId
+            _id: mongoose.Types.ObjectId(sessionId)
           }
         },
         {
