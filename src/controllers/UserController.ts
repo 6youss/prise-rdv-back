@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import User, { IUser } from "../models/User";
 import Doctor, { IDoctor } from "../models/Doctor";
-import Patient, { IPatient } from "../models/Patient";
+import Patient from "../models/Patient";
 import jwt from "jsonwebtoken";
 import { IVerifyOptions } from "passport-local";
 import passport from "passport";
