@@ -6,6 +6,42 @@ import Patient from "../models/Patient";
 
 class SessionController {
   /**
+   * GET /sessions/:sessionId
+   * Get the session details
+   */
+  static async getSessionDetails(req: Request, res: Response) {
+    try {
+      const { sessionId } = req.params;
+      const sessionDetails = await Session.aggregate([
+        {
+          $match: {
+            _id: sessionId
+          }
+        },
+        {
+          $lookup: {
+            from: "patient",
+            localField: "patient",
+            foreignField: "_id",
+            as: "patientDetails"
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            date: 1,
+            patientDetails: { $arrayElemAt: ["$patientDetails", 0] }
+          }
+        }
+      ]);
+      if (!sessionDetails) return res.sendStatus(404);
+      console.log(sessionDetails);
+      res.status(200).json({ session: sessionDetails });
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  }
+  /**
    * GET /sessions/doctor/:doctorId
    * Get the doctor's sessions
    */
