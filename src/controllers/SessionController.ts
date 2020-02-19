@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import Session, { isSessionAvailable } from "../models/Session";
+import Session, { isSessionDoctorAvailable } from "../models/Session";
 import Doctor from "../models/Doctor";
 import Patient from "../models/Patient";
 
@@ -14,12 +14,10 @@ class SessionController {
       const { doctorId } = req.params;
       const doc = await Doctor.findById(doctorId);
       if (!doc) return res.sendStatus(404);
-      const doctorSessions = await Session.find({ doctor: doctorId }).select("_id doctor patient date");
-      if (doctorSessions.length === 0) {
-        res.sendStatus(204);
-      } else {
-        res.status(200).json({ sessions: doctorSessions });
-      }
+      const doctorSessions = await Session.find({ doctor: doctorId })
+        .select("_id doctor patient date")
+        .sort({ date: 1 });
+      res.status(200).json({ sessions: doctorSessions });
     } catch (error) {
       res.sendStatus(500);
     }
@@ -52,7 +50,7 @@ class SessionController {
     try {
       const { patientId, doctorId, date } = req.body;
       const parsedDate = new Date(date);
-      const sessionAvailable = await isSessionAvailable(patientId, doctorId, parsedDate);
+      const sessionAvailable = await isSessionDoctorAvailable(doctorId, parsedDate);
       if (!sessionAvailable) return res.status(412).json({ message: "Unavailable session" });
       const session = await Session.create({
         patient: patientId,

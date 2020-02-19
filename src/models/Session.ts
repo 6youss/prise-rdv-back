@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 type isSessionAvailableFunction = (patientId: string, doctorId: string, date: Date) => Promise<boolean>;
+type isSessionDoctorAvailableFunction = (doctorId: string, date: Date) => Promise<boolean>;
 
 export interface ISession extends Document {
   patient: Schema.Types.ObjectId;
@@ -8,6 +9,25 @@ export interface ISession extends Document {
   date: Date;
 }
 
+export const isSessionDoctorAvailable: isSessionDoctorAvailableFunction = async function(doctorId: string, date: Date) {
+  if (!mongoose.Types.ObjectId.isValid(doctorId)) return false;
+  if (!(date instanceof Date)) return false;
+
+  const dateDebut = new Date(date.getTime() - 30 * 60 * 1000);
+  const dateFin = new Date(date.getTime() + 30 * 60 * 1000);
+
+  // console.log(date.toISOString(), dateDebut.toISOString(), dateFin.toISOString());
+
+  const sessionsCount = await Session.find({
+    $and: [
+      { doctor: doctorId },
+      {
+        $and: [{ date: { $gt: dateDebut } }, { date: { $lt: dateFin } }]
+      }
+    ]
+  }).countDocuments();
+  return sessionsCount === 0;
+};
 export const isSessionAvailable: isSessionAvailableFunction = async function(
   patientId: string,
   doctorId: string,
@@ -19,6 +39,8 @@ export const isSessionAvailable: isSessionAvailableFunction = async function(
 
   const dateDebut = new Date(date.getTime() - 30 * 60 * 1000);
   const dateFin = new Date(date.getTime() + 30 * 60 * 1000);
+
+  // console.log(date.toISOString(), dateDebut.toISOString(), dateFin.toISOString());
 
   const sessionsCount = await Session.find({
     $or: [
