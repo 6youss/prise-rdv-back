@@ -11,8 +11,8 @@ declare global {
       JWT_ACCESS_SECRET: string;
       JWT_REFRESH_SECRET: string;
       PORT: string;
-      MONGODB_URI_LOCAL: string;
-      MONGODB_URI_LOCAL_TEST: string;
+      MONGODB_URI: string;
+      MONGODB_URI_TEST: string;
     }
   }
 }

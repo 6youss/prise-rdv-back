@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const dbUri = process.env.MONGODB_URI_LOCAL;
+const dbUri = process.env.MONGODB_URI;
 
 const connection = mongoose.connect(dbUri, {
   useCreateIndex: true,
