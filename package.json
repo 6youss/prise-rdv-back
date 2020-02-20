@@ -7,7 +7,8 @@
     "prod": "npm run build && node dist/server.js",
     "watch-ts": "npm run build -w",
     "watch-node": "nodemon dist/server.js",
-    "build": "tsc",
+    "build": "npm run tsc",
+    "tsc": "tsc",
     "test": "jest --verbose"
   },
   "keywords": [],
