@@ -35,8 +35,8 @@ class SessionController {
         }
       ]);
       if (!sessionDetails) return res.sendStatus(404);
-      console.log(sessionDetails);
-      res.status(200).json({ session: sessionDetails });
+
+      res.status(200).json({ session: sessionDetails[0] });
     } catch (error) {
       res.sendStatus(500);
     }
