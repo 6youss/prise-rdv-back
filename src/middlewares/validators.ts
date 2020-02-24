@@ -1,5 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { signUpSchema, loginSchema, sessionSchema, phoneSchema, objectIdSchema } from "./validationSchemas";
+import {
+  signUpSchema,
+  loginSchema,
+  sessionSchema,
+  phoneSchema,
+  objectIdSchema,
+  deviceSchema
+} from "../utils/validationSchemas";
 
 export function validateDoctorIdParam(req: Request, res: Response, next: NextFunction) {
   const { error } = objectIdSchema.validate(req.params.doctorId);
@@ -31,6 +38,12 @@ export function validateLoginBody(req: Request, res: Response, next: NextFunctio
 
 export function validateSessionBody(req: Request, res: Response, next: NextFunction) {
   const { error } = sessionSchema.validate(req.body);
+  if (error) return res.status(412).json({ message: error.message });
+  next();
+}
+
+export function validateDeviceBody(req: Request, res: Response, next: NextFunction) {
+  const { error } = deviceSchema.validate(req.body);
   if (error) return res.status(412).json({ message: error.message });
   next();
 }

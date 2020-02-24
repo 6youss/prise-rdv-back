@@ -1,5 +1,6 @@
 import { doctorTests } from "./doctorTests";
 import { sessionTests } from "./sessionTests";
+import { deviceTests } from "./deviceTests";
 import {
   closeTestsDatabaseConnection,
   connectTestsDatabase,
@@ -20,6 +21,7 @@ beforeAll(async () => {
 
 describe("doctor controller", doctorTests(request));
 describe("session controller", sessionTests(request));
+describe("device controller", deviceTests(request));
 
 afterAll(async done => {
   (await server).close(done);

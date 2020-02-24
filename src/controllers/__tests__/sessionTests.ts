@@ -64,25 +64,36 @@ export const sessionTests = (request: supertest.SuperTest<supertest.Test>) => ()
 
   describe("get the doctor sessions", () => {
     test("should get doctor sessions with valid existing doctorId", async () => {
-      const res = await request.get(`/api/sessions/doctor/${defaultUsers.doctor._id}`);
+      const res = await request
+        .get(`/api/sessions/doctor/${defaultUsers.doctor._id}`)
+        .set("Authorization", "Bearer " + patientToken);
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("sessions");
       expect(res.body.sessions).toBeInstanceOf(Array);
     });
-    test("should return 204 if doctor doesn't have any sessions", async () => {
+    test("should return empty array if doctor doesn't have any sessions", async () => {
       const doctor = await generateNewDoctor(undefined);
-      const res = await request.get(`/api/sessions/doctor/${doctor._id}`);
-      expect(res.status).toBe(204);
+      const res = await request
+        .get(`/api/sessions/doctor/${doctor._id}`)
+        .set("Authorization", "Bearer " + patientToken);
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("sessions");
+      expect(res.body.sessions).toBeInstanceOf(Array);
+      expect(res.body.sessions).toHaveLength(0);
     });
 
     test("should return 404 if doctor doesn't exist", async () => {
-      const res = await request.get(`/api/sessions/doctor/${generateNewId()}`);
+      const res = await request
+        .get(`/api/sessions/doctor/${generateNewId()}`)
+        .set("Authorization", "Bearer " + patientToken);
       expect(res.status).toBe(404);
     });
 
     test("should send 412 status with invalid id format", async () => {
       const invalidIdFormat = "invalidIdFormat";
-      const res = await request.get(`/api/sessions/doctor/${invalidIdFormat}`);
+      const res = await request
+        .get(`/api/sessions/doctor/${invalidIdFormat}`)
+        .set("Authorization", "Bearer " + patientToken);
       expect(res.status).toBe(412);
     });
   });

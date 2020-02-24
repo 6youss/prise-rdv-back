@@ -90,3 +90,9 @@ export const sessionSchema = Joi.object({
     .iso()
     .required()
 }).required();
+
+export const deviceSchema = Joi.object({
+  user: objectIdSchema,
+  fcmToken: Joi.string().required(),
+  platform: Joi.string().required()
+}).required();
