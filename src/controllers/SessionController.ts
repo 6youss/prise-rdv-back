@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Session, { isSessionDoctorAvailable } from "../models/Session";
 import Doctor from "../models/Doctor";
 import Patient from "../models/Patient";
+import pushNotifications from "../utils/pushNotifications";
 
 class SessionController {
   /**
@@ -93,8 +94,7 @@ class SessionController {
         doctor: doctorId,
         date: parsedDate
       });
-
-      res.status(201).json({ session });
+      return res.status(201).json({ session });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

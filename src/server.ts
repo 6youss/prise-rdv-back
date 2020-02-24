@@ -5,7 +5,6 @@ import cors from "cors";
 import routes from "./routes";
 import dbConnection from "./models/dbConnection";
 import configPassport from "./passport";
-
 const app = express();
 
 export const server = dbConnection.then(() => {
