@@ -29,9 +29,9 @@ export async function sendNotification(
   const [foundDevice] = await Device.find({ user: userId });
 
   if (foundDevice) {
-    messaging.sendToDevice(foundDevice.fcmToken, payload);
+    return messaging.sendToDevice(foundDevice.fcmToken, payload);
   }
-  throw new Error("can't send notification to unexisting user");
+  throw new Error(`notifications error: the user of type ${userType} ${id} doesn't have a registered device`);
 }
 
 export default messaging;

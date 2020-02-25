@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import Session, { isSessionDoctorAvailable } from "../models/Session";
 import Doctor from "../models/Doctor";
 import Patient from "../models/Patient";
-import pushNotifications from "../utils/pushNotifications";
+import pushNotifications, { sendNotification } from "../utils/pushNotifications";
 
 class SessionController {
   /**
@@ -94,7 +94,13 @@ class SessionController {
         doctor: doctorId,
         date: parsedDate
       });
-      return res.status(201).json({ session });
+
+      res.status(201).json({ session });
+
+      //notify the doctor about the reserved session
+      await sendNotification(doctorId, { data: { type: "NEW_SESSION", patientId, date } }, "doctor").catch(error =>
+        console.log(error)
+      );
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
