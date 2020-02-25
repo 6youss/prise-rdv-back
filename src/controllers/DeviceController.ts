@@ -9,7 +9,8 @@ class DeviceController {
    */
   static async postDevice(req: Request, res: Response) {
     try {
-      const { user, fcmToken, platform } = req.body;
+      const user = req.user.id;
+      const { fcmToken, platform } = req.body;
       const foundUser = await User.findById(user);
       if (!foundUser) return res.status(404).json({ message: "can't add device to unexisting user" });
 

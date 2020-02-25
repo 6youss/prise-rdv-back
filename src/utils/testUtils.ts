@@ -1,7 +1,7 @@
 import crypto from "crypto";
 require("dotenv").config({ path: ".env.test" });
 import mongoose from "mongoose";
-import UserModel, { IUser } from "../models/User";
+import User, { IUser } from "../models/User";
 import PatientModel, { IPatient } from "../models/Patient";
 import DoctorModel, { IDoctor } from "../models/Doctor";
 import dbConnection from "../models/dbConnection";
@@ -32,7 +32,7 @@ export async function addDefaultUsers() {
     holidays: [new Date("01/05/2020")]
   } as IDoctor);
 
-  const doctorUser = await UserModel.create({
+  const doctorUser = await User.create({
     username: "doctor",
     password: "0000",
     userType: { value: "doctor", targetId: defaultDoctorIdMock }
@@ -45,7 +45,7 @@ export async function addDefaultUsers() {
     lastName: "patient"
   } as IPatient);
 
-  const patientUser = await UserModel.create({
+  const patientUser = await User.create({
     username: "patient",
     password: "0000",
     userType: { value: "patient", targetId: defaultPatientIdMock }

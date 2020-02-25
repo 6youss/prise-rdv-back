@@ -92,7 +92,6 @@ export const sessionSchema = Joi.object({
 }).required();
 
 export const deviceSchema = Joi.object({
-  user: objectIdSchema,
   fcmToken: Joi.string().required(),
   platform: Joi.string().required()
 }).required();
