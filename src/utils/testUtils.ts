@@ -1,10 +1,10 @@
-import crypto from "crypto";
-require("dotenv").config({ path: ".env.test" });
-import mongoose from "mongoose";
-import User, { IUser } from "../models/User";
-import PatientModel, { IPatient } from "../models/Patient";
-import DoctorModel, { IDoctor } from "../models/Doctor";
-import dbConnection from "../models/dbConnection";
+import crypto from 'crypto';
+require('dotenv').config({path: '.env.test'});
+import mongoose from 'mongoose';
+import User, {IUser} from '../models/User';
+import PatientModel, {IPatient} from '../models/Patient';
+import DoctorModel, {IDoctor} from '../models/Doctor';
+import dbConnection from '../models/dbConnection';
 
 export const defaultDoctorIdMock = generateNewId();
 export const defaultPatientIdMock = generateNewId();
@@ -25,41 +25,42 @@ export async function addDefaultUsers() {
   //Doctor
   const doctor = await generateNewDoctor({
     _id: defaultDoctorIdMock,
-    firstName: "doctor",
-    lastName: "doctor",
-    phone: "0758081532",
-    address: "03 Rue Taylor 75000",
-    holidays: [new Date("01/05/2020")]
+    firstName: 'doctor',
+    lastName: 'doctor',
+    phone: '0758081532',
+    address: '03 Rue Taylor 75000',
   } as IDoctor);
 
   const doctorUser = await User.create({
-    username: "doctor",
-    password: "0000",
-    userType: { value: "doctor", targetId: defaultDoctorIdMock }
+    username: 'doctor',
+    password: '0000',
+    userType: {value: 'doctor', targetId: defaultDoctorIdMock},
   });
 
   // Patient
   const patient = await generateNewPatient({
     _id: defaultPatientIdMock,
-    firstName: "patient",
-    lastName: "patient"
+    firstName: 'patient',
+    lastName: 'patient',
   } as IPatient);
 
   const patientUser = await User.create({
-    username: "patient",
-    password: "0000",
-    userType: { value: "patient", targetId: defaultPatientIdMock }
+    username: 'patient',
+    password: '0000',
+    userType: {value: 'patient', targetId: defaultPatientIdMock},
   });
 
   defaultUsers = {
     doctor,
     doctorUser,
     patient,
-    patientUser
+    patientUser,
   };
 }
 
-export async function generateNewDoctor(doctor: IDoctor | undefined): Promise<IDoctor> {
+export async function generateNewDoctor(
+  doctor: IDoctor | undefined,
+): Promise<IDoctor> {
   if (!doctor) {
     return await DoctorModel.create({
       _id: generateNewId(),
@@ -67,18 +68,17 @@ export async function generateNewDoctor(doctor: IDoctor | undefined): Promise<ID
       lastName: generateRandomString(8),
       phone: generateRandomPhone(),
       address: generateRandomString(16),
-      holidays: [new Date("01/05/2020")]
     } as IDoctor);
   }
   return await DoctorModel.create(doctor);
 }
 
 export function generateRandomString(length: number) {
-  return crypto.randomBytes(length).toString("hex");
+  return crypto.randomBytes(length).toString('hex');
 }
 export function generateRandomPhone() {
   return (
-    "0" +
+    '0' +
     Math.random()
       .toString()
       .substring(10)

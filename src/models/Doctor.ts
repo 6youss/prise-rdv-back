@@ -5,12 +5,12 @@ export interface DateRange {
   to: Date;
 }
 export interface SessionDuration extends DateRange {
-  duration: string;
+  duration: number;
 }
 
 export interface WorkingHours extends DateRange {
-  start: string;
-  end: string;
+  opensAt: string;
+  closesAt: string;
 }
 
 export type ReservationType = 'counter' | 'time';
@@ -32,8 +32,14 @@ const DoctorSchema = new Schema({
   phone: String,
   address: String,
   unavailablities: [{from: Date, to: Date}],
-  workingHours: [{from: Date, to: Date, start: String, end: String}],
-  sessionDurations: [{from: Date, to: Date, duration: String}],
+  workingHours: {
+    type: [{from: Date, to: Date, opensAt: String, closesAt: String}],
+    default: {from: new Date(), to: null, opensAt: '08:00', closesAt: '17:00'},
+  },
+  sessionDurations: {
+    type: [{from: Date, to: Date, duration: Number}],
+    default: {from: new Date(), to: null, duration: 30},
+  },
   reservationType: {type: String, enum: ['counter', 'time'], default: 'time'},
 });
 

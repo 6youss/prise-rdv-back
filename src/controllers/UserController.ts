@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from "express";
-import User, { IUser } from "../models/User";
-import Doctor, { IDoctor } from "../models/Doctor";
-import Patient from "../models/Patient";
-import jwt from "jsonwebtoken";
-import { IVerifyOptions } from "passport-local";
-import passport from "passport";
+import {Request, Response, NextFunction} from 'express';
+import User, {IUser} from '../models/User';
+import Doctor, {IDoctor} from '../models/Doctor';
+import Patient from '../models/Patient';
+import jwt from 'jsonwebtoken';
+import {IVerifyOptions} from 'passport-local';
+import passport from 'passport';
 
 class UserController {
   /**
@@ -14,20 +14,20 @@ class UserController {
   static async getUser(req: Request, res: Response, next: NextFunction) {
     //get the user info from passport's done() function
     const {
-      userType: { value, targetId }
+      userType: {value, targetId},
     } = req.user;
     try {
       switch (value) {
-        case "doctor": {
+        case 'doctor': {
           const doctor = await Doctor.findById(targetId);
-          return res.status(200).json({ doctor });
+          return res.status(200).json({doctor});
         }
-        case "patient": {
+        case 'patient': {
           const patient = await Patient.findById(targetId);
-          return res.status(200).json({ patient });
+          return res.status(200).json({patient});
         }
         default:
-          return res.status(412).json({ message: "Wrong user type." });
+          return res.status(412).json({message: 'Wrong user type.'});
       }
     } catch (error) {
       return res.sendStatus(500);
@@ -39,31 +39,41 @@ class UserController {
    * Sign in using email and password.
    */
   static async postLogin(req: Request, res: Response, next: NextFunction) {
-    passport.authenticate("local", async (err: Error, user: IUser, info: IVerifyOptions) => {
-      try {
-        if (!user || err) {
-          return res.status(401).json(info);
-        }
-        const userPayload = {
-          id: user._id,
-          username: user.username,
-          userType: user.userType.value
-        };
-        const accessToken = jwt.sign(userPayload, process.env.JWT_ACCESS_SECRET, { expiresIn: "30m" });
-        const refreshToken = jwt.sign(userPayload, process.env.JWT_REFRESH_SECRET);
-        user.refreshToken = refreshToken;
-        await user.save();
+    passport.authenticate(
+      'local',
+      async (err: Error, user: IUser, info: IVerifyOptions) => {
+        try {
+          if (!user || err) {
+            return res.status(401).json(info);
+          }
+          const userPayload = {
+            id: user._id,
+            username: user.username,
+            userType: user.userType.value,
+          };
+          const accessToken = jwt.sign(
+            userPayload,
+            process.env.JWT_ACCESS_SECRET,
+            {expiresIn: '30m'},
+          );
+          const refreshToken = jwt.sign(
+            userPayload,
+            process.env.JWT_REFRESH_SECRET,
+          );
+          user.refreshToken = refreshToken;
+          await user.save();
 
-        return res.json({
-          message: "User logged in successfuly.",
-          ...userPayload,
-          accessToken,
-          refreshToken
-        });
-      } catch (error) {
-        return res.sendStatus(500);
-      }
-    })(req, res, next);
+          return res.json({
+            message: 'User logged in successfuly.',
+            ...userPayload,
+            accessToken,
+            refreshToken,
+          });
+        } catch (error) {
+          return res.sendStatus(500);
+        }
+      },
+    )(req, res, next);
   }
 
   /**
@@ -71,48 +81,49 @@ class UserController {
    * Create a new local account.
    */
   static async postSignup(req: Request, res: Response, next: NextFunction) {
-    const { username, password, userType } = req.body;
+    const {username, password, userType} = req.body;
     /**
      * @TODO
      * Validation
      */
 
     try {
-      const foundUser = await User.findOne({ username });
+      const foundUser = await User.findOne({username});
       if (foundUser) {
-        return res.status(409).json({ message: "Account with that user name already exists." });
+        return res
+          .status(409)
+          .json({message: 'Account with that user name already exists.'});
       }
 
       const user = new User({
         username,
-        password
+        password,
       });
 
       switch (userType) {
-        case "patient": {
+        case 'patient': {
           const patient = await Patient.create({
             firstName: req.body.profile.firstName,
-            lastName: req.body.profile.lastName
+            lastName: req.body.profile.lastName,
           });
-          user.userType = { value: "patient", targetId: patient._id };
+          user.userType = {value: 'patient', targetId: patient._id};
           break;
         }
-        case "doctor": {
+        case 'doctor': {
           const doctor = await Doctor.create({
             firstName: req.body.profile.firstName,
             lastName: req.body.profile.lastName,
             address: req.body.profile.address,
-            holidays: req.body.profile.holidays,
-            phone: req.body.profile.phone
+            phone: req.body.profile.phone,
           } as IDoctor);
-          user.userType = { value: "doctor", targetId: doctor._id };
+          user.userType = {value: 'doctor', targetId: doctor._id};
           break;
         }
         default:
-          return res.status(422).json({ message: "Invalid user type" });
+          return res.status(422).json({message: 'Invalid user type'});
       }
       await user.save();
-      return res.status(200).json({ message: "account created successfully" });
+      return res.status(200).json({message: 'account created successfully'});
     } catch (error) {
       res.sendStatus(500);
     }
@@ -122,16 +133,24 @@ class UserController {
     try {
       const token = req.body.token;
       if (!token) return res.sendStatus(401);
-      const user = await User.findOne({ refreshToken: token });
+      const user = await User.findOne({refreshToken: token});
       if (!user) return res.sendStatus(403);
-      const { refreshToken } = user;
-      jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user: any) => {
-        if (err) return res.sendStatus(403);
-        const accessToken = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_ACCESS_SECRET, {
-          expiresIn: "30s"
-        });
-        return res.json({ accessToken });
-      });
+      const {refreshToken} = user;
+      jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET,
+        (err, user: any) => {
+          if (err) return res.sendStatus(403);
+          const accessToken = jwt.sign(
+            {id: user._id, username: user.username},
+            process.env.JWT_ACCESS_SECRET,
+            {
+              expiresIn: '30s',
+            },
+          );
+          return res.json({accessToken});
+        },
+      );
     } catch (e) {
       res.sendStatus(500);
     }

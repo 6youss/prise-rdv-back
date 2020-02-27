@@ -1,17 +1,17 @@
-import Joi from "@hapi/joi";
+import Joi from '@hapi/joi';
 
 //SCHEMA OBJECTS
 const username = Joi.string()
   .alphanum()
   .min(3)
   .max(30)
-  .not(Joi.ref("password"))
+  .not(Joi.ref('password'))
   .messages({
-    "any.invalid": "username and password must be different"
+    'any.invalid': 'username and password must be different',
   })
   .required();
 
-const password = Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"));
+const password = Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'));
 
 const firstName = Joi.string()
   .alphanum()
@@ -46,41 +46,37 @@ export const DoctorProfileSchema = Joi.object({
     .required(),
 
   phone: phoneSchema,
-
-  holidays: Joi.array()
-    .items(Joi.date())
-    .required()
 }).required();
 
 export const PatientProfileSchema = Joi.object({
   firstName,
 
-  lastName
+  lastName,
 }).required();
 
 export const signUpSchema = Joi.object({
   username,
 
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
 
   confirmPassword: Joi.any()
-    .valid(Joi.ref("password"))
+    .valid(Joi.ref('password'))
     .required(),
 
   userType: Joi.string()
-    .valid(...["doctor", "patient"])
+    .valid(...['doctor', 'patient'])
     .required(),
 
-  profile: Joi.when("userType", {
-    is: "doctor",
+  profile: Joi.when('userType', {
+    is: 'doctor',
     then: DoctorProfileSchema,
-    otherwise: PatientProfileSchema
-  }).required()
+    otherwise: PatientProfileSchema,
+  }).required(),
 }).required();
 
 export const loginSchema = Joi.object({
   username,
-  password
+  password,
 }).required();
 
 export const sessionSchema = Joi.object({
@@ -88,10 +84,10 @@ export const sessionSchema = Joi.object({
   doctorId: objectIdSchema,
   date: Joi.date()
     .iso()
-    .required()
+    .required(),
 }).required();
 
 export const deviceSchema = Joi.object({
   fcmToken: Joi.string().required(),
-  platform: Joi.string().required()
+  platform: Joi.string().required(),
 }).required();
