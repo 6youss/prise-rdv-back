@@ -1,7 +1,17 @@
 import {Request, Response, NextFunction} from 'express';
 import Doctor from '../models/Doctor';
-
+import mongoose, {Schema, Document} from 'mongoose';
 class DoctorController {
+  static async patchDoctor(req: Request, res: Response, next: NextFunction) {
+    let updateObject = req.body;
+    const doctorId = req.params.doctorId;
+
+    Doctor.update(
+      {_id: new mongoose.Types.ObjectId(doctorId)},
+      {$set: updateObject},
+    );
+  }
+
   /**
    * GET /doctor
    * Get all the doctors

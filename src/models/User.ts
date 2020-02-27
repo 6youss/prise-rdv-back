@@ -1,8 +1,8 @@
-import bcrypt from "bcryptjs";
-import mongoose, { Schema, Document } from "mongoose";
+import bcrypt from 'bcryptjs';
+import mongoose, {Schema, Document} from 'mongoose';
 
 export interface IUserType {
-  value: "doctor" | "patient";
+  value: 'doctor' | 'patient';
   targetId: Schema.Types.ObjectId;
 }
 
@@ -14,44 +14,54 @@ export interface IUser extends Document {
   comparePassword: comparePasswordFunction;
 }
 
-type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
+type comparePasswordFunction = (
+  candidatePassword: string,
+  cb: (err: any, isMatch: any) => {},
+) => void;
 
 const UserTypeSchema = new Schema(
   {
     value: {
       type: String,
       // Warning: only use valid Model names because it will be used in reference.model.refPath
-      enum: ["doctor", "patient"]
+      enum: ['doctor', 'patient'],
     },
     targetId: {
       type: Schema.Types.ObjectId,
-      refPath: "userType.value"
-    }
+      refPath: 'userType.value',
+    },
   },
   {
-    _id: false
-  }
+    _id: false,
+  },
 );
 
 const UserSchema = new Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  username: {type: String, required: true, unique: true},
+  password: {type: String, required: true},
   refreshToken: String,
-  userType: UserTypeSchema
+  userType: UserTypeSchema,
 });
 
-const comparePassword: comparePasswordFunction = function(candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
-    cb(err, isMatch);
-  });
+const comparePassword: comparePasswordFunction = function(
+  candidatePassword,
+  cb,
+) {
+  bcrypt.compare(
+    candidatePassword,
+    this.password,
+    (err: mongoose.Error, isMatch: boolean) => {
+      cb(err, isMatch);
+    },
+  );
 };
 
 /**
  * Password hash middleware.
  */
-UserSchema.pre("save", function save(next) {
+UserSchema.pre('save', function save(next) {
   const user = this as IUser;
-  if (!user.isModified("password")) {
+  if (!user.isModified('password')) {
     return next();
   }
   bcrypt.genSalt(10, (err, salt) => {
@@ -70,6 +80,6 @@ UserSchema.pre("save", function save(next) {
 
 UserSchema.methods.comparePassword = comparePassword;
 
-const User = mongoose.model<IUser>("User", UserSchema);
+const User = mongoose.model<IUser>('User', UserSchema);
 
 export default User;

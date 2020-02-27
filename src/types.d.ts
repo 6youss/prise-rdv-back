@@ -1,4 +1,4 @@
-import { IUser } from "./models/User";
+import {IUser} from './models/User';
 
 declare global {
   namespace Express {
@@ -7,7 +7,7 @@ declare global {
 
   namespace NodeJS {
     export interface ProcessEnv {
-      NODE_ENV: "test" | "dev" | "production";
+      NODE_ENV: 'test' | 'dev' | 'production';
       JWT_ACCESS_SECRET: string;
       JWT_REFRESH_SECRET: string;
       PORT: string;

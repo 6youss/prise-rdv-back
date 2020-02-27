@@ -8,7 +8,7 @@ import passport from 'passport';
 
 class UserController {
   /**
-   * Get /
+   * GET /
    * Get user info using a token
    */
   static async getUser(req: Request, res: Response, next: NextFunction) {
