@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi';
 
-//SCHEMA OBJECTS
+//:::::::::::: COMMON SCHEMA OBJECTS :::::::::::::::::://
 const username = Joi.string()
   .alphanum()
   .min(3)
@@ -34,7 +34,8 @@ export const phoneSchema = Joi.string()
   .regex(/^[0-9]{7,10}$/)
   .required();
 
-//VALIDATION SCHEMAS
+//::::::::::::::::::::::: VALIDATION SCHEMAS ::::::::::::::::::::::::::::/
+
 export const DoctorProfileSchema = Joi.object({
   firstName,
 
@@ -46,7 +47,50 @@ export const DoctorProfileSchema = Joi.object({
     .required(),
 
   phone: phoneSchema,
+
+  reservationType: Joi.string().valid(...['counter', 'time']),
+
+  unavailablities: Joi.array().items(
+    Joi.object({
+      from: Joi.date()
+        .iso()
+        .required(),
+      to: Joi.date()
+        .iso()
+        .required(),
+    }),
+  ),
+
+  workingHours: Joi.array().items(
+    Joi.object({
+      from: Joi.date()
+        .iso()
+        .required(),
+      to: Joi.date()
+        .iso()
+        .required(),
+      opensAt: Joi.string().required(),
+      closesAt: Joi.string().required(),
+    }),
+  ),
+
+  sessionDurations: Joi.array().items(
+    Joi.object({
+      from: Joi.date()
+        .iso()
+        .required(),
+      to: Joi.date()
+        .iso()
+        .required(),
+      duration: Joi.number()
+        .min(5)
+        .max(120)
+        .required(),
+    }),
+  ),
 }).required();
+
+export const patchDoctorSchema = DoctorProfileSchema.optional();
 
 export const PatientProfileSchema = Joi.object({
   firstName,

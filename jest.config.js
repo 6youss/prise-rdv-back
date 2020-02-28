@@ -1,5 +1,5 @@
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  testMatch: ["**/__tests__/*.test.ts", "**/__tests__/*.integ.ts"]
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testMatch: ['**/*.test.ts', '**/*.integ.ts'],
 };
