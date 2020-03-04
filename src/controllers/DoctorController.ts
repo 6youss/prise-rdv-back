@@ -3,13 +3,30 @@ import Doctor from '../models/Doctor';
 import mongoose, {Schema, Document} from 'mongoose';
 class DoctorController {
   static async patchDoctor(req: Request, res: Response, next: NextFunction) {
-    let updateObject = req.body;
-    const doctorId = req.params.doctorId;
+    try {
+      let updateObject = req.body;
+      const doctorId = req.params.doctorId;
 
-    Doctor.update(
-      {_id: new mongoose.Types.ObjectId(doctorId)},
-      {$set: updateObject},
-    );
+      const updateInfo = await Doctor.updateOne(
+        {_id: new mongoose.Types.ObjectId(doctorId)},
+        {
+          $set: updateObject,
+        },
+      );
+      if (updateInfo.n > 0) {
+        const doctor = await Doctor.findById(doctorId);
+        res.status(200).json({
+          doctor,
+        });
+      } else {
+        res.status(404).json({
+          message:
+            'doctor to be updated not found, make sure to send the right id',
+        });
+      }
+    } catch (error) {
+      return res.sendStatus(500);
+    }
   }
 
   /**

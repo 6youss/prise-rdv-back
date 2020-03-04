@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
-import mongoose from "mongoose";
-import Session, { isSessionDoctorAvailable } from "../models/Session";
-import Doctor from "../models/Doctor";
-import Patient from "../models/Patient";
-import pushNotifications, { sendNotification } from "../utils/pushNotifications";
+import {Request, Response} from 'express';
+import mongoose from 'mongoose';
+import Session, {isSessionDoctorAvailable} from '../models/Session';
+import Doctor from '../models/Doctor';
+import Patient from '../models/Patient';
+import pushNotifications, {sendNotification} from '../utils/pushNotifications';
 
 class SessionController {
   /**
@@ -12,32 +12,32 @@ class SessionController {
    */
   static async getSessionDetails(req: Request, res: Response) {
     try {
-      const { sessionId } = req.params;
+      const {sessionId} = req.params;
       const sessionDetails = await Session.aggregate([
         {
           $match: {
-            _id: mongoose.Types.ObjectId(sessionId)
-          }
+            _id: mongoose.Types.ObjectId(sessionId),
+          },
         },
         {
           $lookup: {
-            from: "patient",
-            localField: "patient",
-            foreignField: "_id",
-            as: "patientDetails"
-          }
+            from: 'patient',
+            localField: 'patient',
+            foreignField: '_id',
+            as: 'patientDetails',
+          },
         },
         {
           $project: {
             _id: 1,
             date: 1,
-            patientDetails: { $arrayElemAt: ["$patientDetails", 0] }
-          }
-        }
+            patientDetails: {$arrayElemAt: ['$patientDetails', 0]},
+          },
+        },
       ]);
       if (!sessionDetails) return res.sendStatus(404);
 
-      res.status(200).json({ session: sessionDetails[0] });
+      res.status(200).json({session: sessionDetails[0]});
     } catch (error) {
       res.sendStatus(500);
     }
@@ -48,13 +48,13 @@ class SessionController {
    */
   static async getDoctorSessions(req: Request, res: Response) {
     try {
-      const { doctorId } = req.params;
+      const {doctorId} = req.params;
       const doc = await Doctor.findById(doctorId);
       if (!doc) return res.sendStatus(404);
-      const doctorSessions = await Session.find({ doctor: doctorId })
-        .select("_id doctor patient date")
-        .sort({ date: 1 });
-      res.status(200).json({ sessions: doctorSessions });
+      const doctorSessions = await Session.find({doctor: doctorId})
+        .select('_id doctor patient date')
+        .sort({date: 1});
+      res.status(200).json({sessions: doctorSessions});
     } catch (error) {
       res.sendStatus(500);
     }
@@ -65,14 +65,16 @@ class SessionController {
    */
   static async getPatientSessions(req: Request, res: Response) {
     try {
-      const { patientId } = req.params;
+      const {patientId} = req.params;
       const patient = await Patient.findById(patientId);
       if (!patient) return res.sendStatus(404);
-      const patientSessions = await Session.find({ patient: patientId }).select("_id doctor patient date");
+      const patientSessions = await Session.find({patient: patientId}).select(
+        '_id doctor patient date',
+      );
       if (patientSessions.length === 0) {
         res.sendStatus(204);
       } else {
-        res.status(200).json({ sessions: patientSessions });
+        res.status(200).json({sessions: patientSessions});
       }
     } catch (error) {
       res.sendStatus(500);
@@ -85,24 +87,30 @@ class SessionController {
    */
   static async postSession(req: Request, res: Response) {
     try {
-      const { patientId, doctorId, date } = req.body;
+      const {patientId, doctorId, date} = req.body;
       const parsedDate = new Date(date);
-      const sessionAvailable = await isSessionDoctorAvailable(doctorId, parsedDate);
-      if (!sessionAvailable) return res.status(412).json({ message: "Unavailable session" });
+      const sessionAvailable = await isSessionDoctorAvailable(
+        doctorId,
+        parsedDate,
+      );
+      if (!sessionAvailable)
+        return res.status(412).json({message: 'Unavailable session'});
       const session = await Session.create({
         patient: patientId,
         doctor: doctorId,
-        date: parsedDate
+        date: parsedDate,
       });
 
-      res.status(201).json({ session });
+      res.status(201).json({session});
 
       //notify the doctor about the reserved session
-      await sendNotification(doctorId, { data: { type: "NEW_SESSION", patientId, date } }, "doctor").catch(error =>
-        console.log(error)
-      );
+      await sendNotification(
+        doctorId,
+        {data: {type: 'NEW_DOCTOR_SESSION', patientId, date}},
+        'doctor',
+      ).catch(error => console.log(error));
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({message: error.message});
     }
   }
 }

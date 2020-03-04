@@ -34,6 +34,49 @@ export const phoneSchema = Joi.string()
   .regex(/^[0-9]{7,10}$/)
   .required();
 
+const address = Joi.string()
+  .min(8)
+  .max(50)
+  .required();
+const reservationType = Joi.string().valid(...['counter', 'time']);
+const unavailablities = Joi.array().items(
+  Joi.object({
+    from: Joi.date()
+      .iso()
+      .required(),
+    to: Joi.date()
+      .iso()
+      .required(),
+  }),
+);
+
+const workingHours = Joi.array().items(
+  Joi.object({
+    from: Joi.date()
+      .iso()
+      .required(),
+    to: Joi.date()
+      .iso()
+      .required(),
+    opensAt: Joi.string().required(),
+    closesAt: Joi.string().required(),
+  }),
+);
+
+const sessionDurations = Joi.array().items(
+  Joi.object({
+    from: Joi.date()
+      .iso()
+      .required(),
+    to: Joi.date()
+      .iso()
+      .required(),
+    duration: Joi.number()
+      .min(5)
+      .max(120)
+      .required(),
+  }),
+);
 //::::::::::::::::::::::: VALIDATION SCHEMAS ::::::::::::::::::::::::::::/
 
 export const DoctorProfileSchema = Joi.object({
@@ -41,60 +84,39 @@ export const DoctorProfileSchema = Joi.object({
 
   lastName,
 
-  address: Joi.string()
-    .min(8)
-    .max(50)
-    .required(),
+  address,
 
   phone: phoneSchema,
 
-  reservationType: Joi.string().valid(...['counter', 'time']),
+  reservationType,
 
-  unavailablities: Joi.array().items(
-    Joi.object({
-      from: Joi.date()
-        .iso()
-        .required(),
-      to: Joi.date()
-        .iso()
-        .required(),
-    }),
-  ),
+  unavailablities,
 
-  workingHours: Joi.array().items(
-    Joi.object({
-      from: Joi.date()
-        .iso()
-        .required(),
-      to: Joi.date()
-        .iso()
-        .required(),
-      opensAt: Joi.string().required(),
-      closesAt: Joi.string().required(),
-    }),
-  ),
+  workingHours,
 
-  sessionDurations: Joi.array().items(
-    Joi.object({
-      from: Joi.date()
-        .iso()
-        .required(),
-      to: Joi.date()
-        .iso()
-        .required(),
-      duration: Joi.number()
-        .min(5)
-        .max(120)
-        .required(),
-    }),
-  ),
+  sessionDurations,
 }).required();
 
-export const patchDoctorSchema = DoctorProfileSchema.optional();
+export const patchDoctorSchema = DoctorProfileSchema.keys({
+  firstName: firstName.optional(),
+
+  lastName: lastName.optional(),
+
+  address: address.optional(),
+
+  phone: phoneSchema.optional(),
+
+  reservationType: reservationType.optional(),
+
+  unavailablities: unavailablities.optional(),
+
+  workingHours: workingHours.optional(),
+
+  sessionDurations: sessionDurations.optional(),
+}).required();
 
 export const PatientProfileSchema = Joi.object({
   firstName,
-
   lastName,
 }).required();
 

@@ -7,7 +7,7 @@ import {
   objectIdSchema,
   deviceSchema,
   patchDoctorSchema,
-} from '../utils/validationSchemas';
+} from './validationSchemas';
 
 export function validateDoctorIdParam(
   req: Request,

@@ -7,16 +7,15 @@ export default () =>
       testValidator(
         validatePatchDoctor,
         {
-          username: 'admin',
-          password: 'admins',
-          confirmPassword: 'admins',
-          userType: 'doctor',
-          profile: {
-            firstName: 'test',
-            lastName: 'test',
-            address: 'my address',
-            phone: '0758081532',
-          },
+          firstName: undefined,
+          workingHours: [
+            {
+              from: new Date().toISOString(),
+              to: new Date().toISOString(),
+              opensAt: '08:00',
+              closesAt: '17:00',
+            },
+          ],
         },
         true,
       );
