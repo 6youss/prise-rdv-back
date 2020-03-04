@@ -8,7 +8,7 @@ import {
   addDefaultUsers,
   defaultUsers,
 } from '../../utils/testUtils';
-import app, {server} from '../../server';
+import app from '../../app';
 import supertest from 'supertest';
 const request = supertest(app);
 
@@ -23,7 +23,6 @@ describe('doctor controller', doctorTests(request));
 describe('device controller', deviceTests(request));
 describe('session controller', sessionTests(request));
 
-afterAll(async done => {
-  (await server).close(done);
+afterAll(async () => {
   await closeTestsDatabaseConnection();
 });
