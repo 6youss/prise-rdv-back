@@ -1,9 +1,10 @@
 import {Request, Response} from 'express';
 import mongoose from 'mongoose';
-import Session, {isSessionDoctorAvailable} from '../models/Session';
+import Session from '../models/Session';
 import Doctor from '../models/Doctor';
 import Patient from '../models/Patient';
-import pushNotifications, {sendNotification} from '../utils/pushNotifications';
+import {sendNotification} from '../utils/pushNotifications';
+import {queryIsSessionAvailableJs} from '../models/Queries';
 
 class SessionController {
   /**
@@ -42,6 +43,7 @@ class SessionController {
       res.sendStatus(500);
     }
   }
+
   /**
    * GET /sessions/doctor/:doctorId
    * Get the doctor's sessions
@@ -88,17 +90,18 @@ class SessionController {
   static async postSession(req: Request, res: Response) {
     try {
       const {patientId, doctorId, date} = req.body;
-      const parsedDate = new Date(date);
-      const sessionAvailable = await isSessionDoctorAvailable(
+      const dateObject = new Date(date);
+      const sessionAvailable = await queryIsSessionAvailableJs(
         doctorId,
-        parsedDate,
+        dateObject,
       );
-      if (!sessionAvailable)
+      if (!sessionAvailable) {
         return res.status(412).json({message: 'Unavailable session'});
+      }
       const session = await Session.create({
         patient: patientId,
         doctor: doctorId,
-        date: parsedDate,
+        date: dateObject,
       });
 
       res.status(201).json({session});

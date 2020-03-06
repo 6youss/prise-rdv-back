@@ -8,6 +8,7 @@ import {
 import supertest from 'supertest';
 import Session from '../../models/Session';
 import {queryIsSessionAvailableJs} from '../../models/Queries';
+import {addDays} from '../../utils/zdate';
 
 export const sessionTests = (
   request: supertest.SuperTest<supertest.Test>,
@@ -23,7 +24,7 @@ export const sessionTests = (
     patientToken = res.body.accessToken;
   });
 
-  describe.only('test isSessionAvailable function', () => {
+  describe('test isSessionAvailable function', () => {
     test("available in doctor's work hours", async () => {
       const outOfDoctorWorkHoursDate = new Date();
       outOfDoctorWorkHoursDate.setHours(8);
@@ -100,9 +101,7 @@ export const sessionTests = (
 
   describe('add session to server', () => {
     test('should add session with valid data', async () => {
-      const availableSessionDate = new Date(
-        new Date().getTime() + 60 * 60 * 1000,
-      ); //current time + 60mn
+      const availableSessionDate = addDays(new Date(), 2);
       const res = await request
         .post('/api/sessions')
         .set('Authorization', 'Bearer ' + patientToken)
