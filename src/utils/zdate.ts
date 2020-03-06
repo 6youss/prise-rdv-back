@@ -1,5 +1,42 @@
 import {ZTime} from './ztime';
 
+export function addMinutes(date: Date, minutes: number) {
+  return new Date(date.getTime() + minutes * 60 * 1000);
+}
+
+export function timeToMinutes(date: Date): number {
+  return date.getHours() * 60 + date.getMinutes();
+}
+
+export function isNumberInRange(
+  num: number,
+  from: number,
+  to: number,
+): boolean {
+  return num >= from && num <= to;
+}
+
+export function isDateInRange(
+  date: Date,
+  from: Date,
+  to: Date | null,
+  ignoreTime: boolean = true,
+): boolean {
+  const _date = new Date(date);
+  const _from = new Date(from);
+  const _to = to ? new Date(to) : null;
+  if (ignoreTime) {
+    _date.setHours(0, 0, 0, 0);
+    _from.setHours(0, 0, 0, 0);
+    _to && _to.setHours(0, 0, 0, 0);
+  }
+
+  return (
+    _date.getTime() >= _from.getTime() &&
+    (_to === null || _date.getTime() <= _to.getTime())
+  );
+}
+
 export function dateRange(startDate: Date, dayCount: number): Array<Date> {
   var dateArray = new Array();
   var stopDate = addDays(startDate, dayCount);

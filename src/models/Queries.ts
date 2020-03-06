@@ -1,5 +1,11 @@
 import Doctor from './Doctor';
 import Session from './Session';
+import {
+  isDateInRange,
+  isNumberInRange,
+  timeToMinutes,
+  addMinutes,
+} from '../utils/zdate';
 
 //had to do it with js :x
 export async function queryIsSessionAvailableJs(
@@ -25,15 +31,20 @@ export async function queryIsSessionAvailableJs(
     }
   }
   if (!isWithinTheWorkingHours) return false;
-
   //out of unavailibilities
   for (let unavailableHour of doctor.unavailablities) {
     if (
-      isDateInRange(dateToReserve, unavailableHour.from, unavailableHour.to)
+      isDateInRange(
+        dateToReserve,
+        unavailableHour.from,
+        unavailableHour.to,
+        false,
+      )
     ) {
       return false;
     }
   }
+
   let currentDuration: number = 30;
   for (let duration of doctor.sessionDurations) {
     if (isDateInRange(dateToReserve, duration.from, duration.to)) {
@@ -44,38 +55,17 @@ export async function queryIsSessionAvailableJs(
 
   //doesn't interfere with other sessions
   const sessionsCount = await Session.find({
+    doctor: doctorId,
     $and: [
-      {doctor: doctorId},
-      {
-        $and: [
-          {date: {$gt: addMinutes(dateToReserve, -currentDuration)}},
-          {date: {$lt: addMinutes(dateToReserve, currentDuration)}},
-        ],
-      },
+      {date: {$gte: addMinutes(dateToReserve, -currentDuration)}},
+      {date: {$lte: addMinutes(dateToReserve, currentDuration)}},
     ],
   }).countDocuments();
 
+  console.log({sessionsCount});
+
   if (sessionsCount > 0) return false;
   return true;
-}
-
-function addMinutes(date: Date, minutes: number) {
-  return new Date(date.getTime() + minutes * 60 * 1000);
-}
-
-function timeToMinutes(date: Date): number {
-  return date.getHours() * 60 + date.getMinutes();
-}
-
-function isNumberInRange(num: number, from: number, to: number): boolean {
-  return num > from && num < to;
-}
-
-function isDateInRange(date: Date, from: Date, to: Date | null): boolean {
-  return (
-    date.getTime() > from.getTime() &&
-    (to === null || date.getTime() < to.getTime())
-  );
 }
 
 //@Warning this gives a false result"

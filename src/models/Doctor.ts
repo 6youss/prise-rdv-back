@@ -36,7 +36,7 @@ const DoctorSchema = new Schema({
   workingHours: {
     type: [{from: Date, to: Date, opensAt: Number, closesAt: Number}],
     default: {
-      from: ZTime.setDateAtTime(new Date(), ZTime.fromHours(8)),
+      from: ZTime.setDateAtTime(new Date(), ZTime.fromHours(0)),
       to: null,
       opensAt: ZTime.fromString('08:00').toMinutes(),
       closesAt: ZTime.fromString('17:00').toMinutes(),

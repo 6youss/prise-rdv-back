@@ -1,6 +1,15 @@
 import Joi from '@hapi/joi';
 
 //:::::::::::: COMMON SCHEMA OBJECTS :::::::::::::::::://
+const fromTo = {
+  from: Joi.date()
+    .iso()
+    .required(),
+  to: Joi.date()
+    .iso()
+    .allow(null)
+    .required(),
+};
 const username = Joi.string()
   .alphanum()
   .min(3)
@@ -52,25 +61,22 @@ const unavailablities = Joi.array().items(
 
 const workingHours = Joi.array().items(
   Joi.object({
-    from: Joi.date()
-      .iso()
+    ...fromTo,
+    opensAt: Joi.number()
+      .integer()
+      .positive()
       .required(),
-    to: Joi.date()
-      .iso()
+    closesAt: Joi.number()
+      .integer()
+      .positive()
+      .min(Joi.ref('opensAt'))
       .required(),
-    opensAt: Joi.string().required(),
-    closesAt: Joi.string().required(),
   }),
 );
 
 const sessionDurations = Joi.array().items(
   Joi.object({
-    from: Joi.date()
-      .iso()
-      .required(),
-    to: Joi.date()
-      .iso()
-      .required(),
+    ...fromTo,
     duration: Joi.number()
       .min(5)
       .max(120)
