@@ -34,7 +34,7 @@ export async function sendNotification(
     return device.fcmToken;
   });
 
-  if (foundDevices) {
+  if (fcmTokens && fcmTokens.length > 0) {
     return await messaging.sendToDevice(fcmTokens, payload);
   }
   throw new Error(

@@ -1,4 +1,5 @@
 import mongoose, {Schema, Document} from 'mongoose';
+import {ZTime} from '../utils/ztime';
 
 export interface DateRange {
   from: Date;
@@ -9,8 +10,8 @@ export interface SessionDuration extends DateRange {
 }
 
 export interface WorkingHours extends DateRange {
-  opensAt: string;
-  closesAt: string;
+  opensAt: number;
+  closesAt: number;
 }
 
 export type ReservationType = 'counter' | 'time';
@@ -31,10 +32,15 @@ const DoctorSchema = new Schema({
   lastName: String,
   phone: String,
   address: String,
-  unavailablities: [{from: Date, to: Date}],
+  unavailablities: {type: [{from: Date, to: Date}], default: null},
   workingHours: {
-    type: [{from: Date, to: Date, opensAt: String, closesAt: String}],
-    default: {from: new Date(), to: null, opensAt: '08:00', closesAt: '17:00'},
+    type: [{from: Date, to: Date, opensAt: Number, closesAt: Number}],
+    default: {
+      from: ZTime.setDateAtTime(new Date(), ZTime.fromHours(8)),
+      to: null,
+      opensAt: ZTime.fromString('08:00').toMinutes(),
+      closesAt: ZTime.fromString('17:00').toMinutes(),
+    },
   },
   sessionDurations: {
     type: [{from: Date, to: Date, duration: Number}],
