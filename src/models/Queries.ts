@@ -43,6 +43,7 @@ export async function queryIsSessionAvailableJs(
     }
   }
 
+  //doesn't interfere with other sessions
   let sessionDuration: number = 30;
   for (let duration of doctor.sessionDurations) {
     if (isDateInRange(dateToReserve, duration.from, duration.to)) {
@@ -51,7 +52,6 @@ export async function queryIsSessionAvailableJs(
     }
   }
 
-  //doesn't interfere with other sessions
   const sessionsCount = await Session.find({
     doctor: doctorId,
     $and: [
