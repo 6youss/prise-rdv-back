@@ -15,22 +15,20 @@ export async function queryIsSessionAvailableJs(
   const doctor = await Doctor.findById(doctorId);
   if (!doctor) return false;
   //is in working hours
-  let isWithinTheWorkingHours: boolean = false;
   for (let workingHour of doctor.workingHours) {
     if (isDateInRange(dateToReserve, workingHour.from, workingHour.to)) {
       if (
-        isNumberInRange(
+        !isNumberInRange(
           timeToMinutes(dateToReserve),
           workingHour.opensAt,
           workingHour.closesAt,
         )
       ) {
-        isWithinTheWorkingHours = true;
-        break;
+        return false;
       }
     }
   }
-  if (!isWithinTheWorkingHours) return false;
+
   //out of unavailibilities
   for (let unavailableHour of doctor.unavailablities) {
     if (
@@ -45,10 +43,10 @@ export async function queryIsSessionAvailableJs(
     }
   }
 
-  let currentDuration: number = 30;
+  let sessionDuration: number = 30;
   for (let duration of doctor.sessionDurations) {
     if (isDateInRange(dateToReserve, duration.from, duration.to)) {
-      currentDuration = duration.duration;
+      sessionDuration = duration.duration;
       break;
     }
   }
@@ -57,12 +55,10 @@ export async function queryIsSessionAvailableJs(
   const sessionsCount = await Session.find({
     doctor: doctorId,
     $and: [
-      {date: {$gte: addMinutes(dateToReserve, -currentDuration)}},
-      {date: {$lte: addMinutes(dateToReserve, currentDuration)}},
+      {date: {$gt: addMinutes(dateToReserve, -sessionDuration)}},
+      {date: {$lt: addMinutes(dateToReserve, sessionDuration)}},
     ],
   }).countDocuments();
-
-  console.log({sessionsCount});
 
   if (sessionsCount > 0) return false;
   return true;
