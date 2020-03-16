@@ -26,20 +26,20 @@ export const sessionTests = (
 
   describe('test isSessionAvailable function', () => {
     test("available in doctor's work hours", async () => {
-      const outOfDoctorWorkHoursDate = new Date();
-      outOfDoctorWorkHoursDate.setHours(8);
+      const inDoctorWorkHoursDate = new Date();
+      inDoctorWorkHoursDate.setHours(8);
       expect(
         await queryIsSessionAvailableJs(
           defaultDoctorIdMock,
-          outOfDoctorWorkHoursDate,
+          inDoctorWorkHoursDate,
         ),
       ).toBe(true);
 
-      outOfDoctorWorkHoursDate.setHours(10);
+      inDoctorWorkHoursDate.setHours(10);
       expect(
         await queryIsSessionAvailableJs(
           defaultDoctorIdMock,
-          outOfDoctorWorkHoursDate,
+          inDoctorWorkHoursDate,
         ),
       ).toBe(true);
     });

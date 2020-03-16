@@ -15,6 +15,7 @@ export async function queryIsSessionAvailableJs(
   const doctor = await Doctor.findById(doctorId);
   if (!doctor) return false;
   //is in working hours
+  let isWithinWorkingHours = true;
   for (let workingHour of doctor.workingHours) {
     if (isDateInRange(dateToReserve, workingHour.from, workingHour.to)) {
       if (
@@ -24,10 +25,11 @@ export async function queryIsSessionAvailableJs(
           workingHour.closesAt,
         )
       ) {
-        return false;
+        isWithinWorkingHours = false;
       }
     }
   }
+  if (!isWithinWorkingHours) return false;
 
   //out of unavailibilities
   for (let unavailableHour of doctor.unavailablities) {

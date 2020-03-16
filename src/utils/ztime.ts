@@ -60,21 +60,4 @@ export class ZTime {
       new Date(date.setHours(time.hours)).setMinutes(time.minutes),
     );
   }
-
-  static filterAvailableHours(
-    startingHour: ZTime,
-    endingHour: ZTime,
-    sessionDuration: number,
-    reservedHours: Array<ZTime>,
-  ): Array<ZTime> {
-    let availableHours: Array<ZTime> = [];
-    let sessionHour = startingHour;
-    while (sessionHour.isLess(endingHour)) {
-      if (!reservedHours.find(hour => hour.equals(sessionHour))) {
-        availableHours.push(sessionHour);
-      }
-      sessionHour = sessionHour.addDuration(sessionDuration);
-    }
-    return availableHours;
-  }
 }

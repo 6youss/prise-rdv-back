@@ -1,5 +1,6 @@
 import {validatePatchDoctor} from '../../validators';
 import testValidator from './testValidatorFunction';
+import {ZTime} from '../../../utils/ztime';
 
 export default () =>
   describe('Doctor patch validation middleware', () => {
@@ -12,8 +13,8 @@ export default () =>
             {
               from: new Date().toISOString(),
               to: new Date().toISOString(),
-              opensAt: '08:00',
-              closesAt: '17:00',
+              opensAt: ZTime.fromString('08:00').toMinutes(),
+              closesAt: ZTime.fromString('17:00').toMinutes(),
             },
           ],
         },

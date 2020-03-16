@@ -54,11 +54,12 @@ class UserController {
           const accessToken = jwt.sign(
             userPayload,
             process.env.JWT_ACCESS_SECRET,
-            {expiresIn: '30m'},
+            {expiresIn: '24h'},
           );
           const refreshToken = jwt.sign(
             userPayload,
             process.env.JWT_REFRESH_SECRET,
+            {expiresIn: '300h'},
           );
           user.refreshToken = refreshToken;
           await user.save();
