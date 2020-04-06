@@ -5,7 +5,7 @@ export function addMinutes(date: Date, minutes: number) {
 }
 
 export function timeToMinutes(date: Date): number {
-  return date.getHours() * 60 + date.getMinutes();
+  return date.getUTCHours() * 60 + date.getUTCMinutes();
 }
 
 export function isNumberInRange(
@@ -26,9 +26,9 @@ export function isDateInRange(
   const _from = new Date(from);
   const _to = to ? new Date(to) : null;
   if (ignoreTime) {
-    _date.setHours(0, 0, 0, 0);
-    _from.setHours(0, 0, 0, 0);
-    _to && _to.setHours(0, 0, 0, 0);
+    _date.setUTCHours(0, 0, 0, 0);
+    _from.setUTCHours(0, 0, 0, 0);
+    _to && _to.setUTCHours(0, 0, 0, 0);
   }
 
   return (
@@ -54,33 +54,8 @@ export function addDays(date: Date, days: number): Date {
   return newdate;
 }
 
-export function getStringFromDate(date: Date, withTime: boolean): string {
-  return (
-    `${addZero(date.getDate())}-${addZero(
-      date.getMonth() + 1,
-    )}-${date.getFullYear()}` +
-    (withTime
-      ? `T${addZero(date.getHours())}:${addZero(date.getMinutes())}`
-      : '')
-  );
-}
-
 function addZero(num: number): string {
   return ('0' + num).slice(-2);
-}
-
-export function getDateFromString(dateTimeString: string): Date {
-  const [dateString, timeString] = dateTimeString.split('T');
-
-  const [day, month, year] = dateString.split('-').map(val => parseInt(val));
-  if (day > 31 || month > 12 || year < 2019)
-    throw new Error('the date format should be of type DD-MM-YYYY');
-
-  if (timeString) {
-    let ztime = ZTime.fromString(timeString);
-    return new Date(year, month - 1, day, ztime.hours, ztime.minutes);
-  }
-  return new Date(year, month - 1, day);
 }
 
 export function getDayName(date: Date): string {

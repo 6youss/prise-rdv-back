@@ -1,6 +1,6 @@
 export class ZTime {
   static fromString(time: string, id?: string): ZTime {
-    let [h, m] = time.split(':').map(val => parseInt(val));
+    let [h, m] = time.split(':').map((val) => parseInt(val));
     return new ZTime(h, m, id);
   }
 
@@ -57,7 +57,7 @@ export class ZTime {
 
   static setDateAtTime(date: Date, time: ZTime) {
     return new Date(
-      new Date(date.setHours(time.hours)).setMinutes(time.minutes),
+      new Date(date.setUTCHours(time.hours)).setUTCMinutes(time.minutes),
     );
   }
 }

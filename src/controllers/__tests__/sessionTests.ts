@@ -27,7 +27,7 @@ export const sessionTests = (
   describe('test isSessionAvailable function', () => {
     test("available in doctor's work hours", async () => {
       const inDoctorWorkHoursDate = new Date();
-      inDoctorWorkHoursDate.setHours(8);
+      inDoctorWorkHoursDate.setUTCHours(8);
       expect(
         await queryIsSessionAvailableJs(
           defaultDoctorIdMock,
@@ -35,7 +35,7 @@ export const sessionTests = (
         ),
       ).toBe(true);
 
-      inDoctorWorkHoursDate.setHours(10);
+      inDoctorWorkHoursDate.setUTCHours(10);
       expect(
         await queryIsSessionAvailableJs(
           defaultDoctorIdMock,
@@ -45,7 +45,7 @@ export const sessionTests = (
     });
     test("not available out of doctor's work hours", async () => {
       const outOfDoctorWorkHoursDate = new Date();
-      outOfDoctorWorkHoursDate.setHours(19);
+      outOfDoctorWorkHoursDate.setUTCHours(19);
       expect(
         await queryIsSessionAvailableJs(
           defaultDoctorIdMock,
@@ -53,7 +53,7 @@ export const sessionTests = (
         ),
       ).toBe(false);
 
-      outOfDoctorWorkHoursDate.setHours(7);
+      outOfDoctorWorkHoursDate.setUTCHours(7);
       expect(
         await queryIsSessionAvailableJs(
           defaultDoctorIdMock,
@@ -64,13 +64,13 @@ export const sessionTests = (
 
     test('not available in the unavailabilities set by the doctor', async () => {
       defaultUsers.doctor.unavailablities.push({
-        from: new Date(new Date().setHours(7)),
-        to: new Date(new Date().setHours(20)),
+        from: new Date(new Date().setUTCHours(7)),
+        to: new Date(new Date().setUTCHours(20)),
       });
       await defaultUsers.doctor.save();
 
       const doctorUnavailableHour = new Date();
-      doctorUnavailableHour.setHours(8);
+      doctorUnavailableHour.setUTCHours(8);
 
       expect(
         await queryIsSessionAvailableJs(

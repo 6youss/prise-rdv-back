@@ -29,6 +29,7 @@ export async function queryIsSessionAvailableJs(
       }
     }
   }
+
   if (!isWithinWorkingHours) return false;
 
   //out of unavailibilities
