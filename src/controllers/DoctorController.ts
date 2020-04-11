@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import Doctor from '../models/Doctor';
-import mongoose, {Schema, Document} from 'mongoose';
+import mongoose from 'mongoose';
+import {doctorById} from '../selectors/doctor';
 class DoctorController {
   static async patchDoctor(req: Request, res: Response, next: NextFunction) {
     try {
@@ -14,7 +15,7 @@ class DoctorController {
         },
       );
       if (updateInfo.n > 0) {
-        const doctor = await Doctor.findById(doctorId);
+        const doctor = await doctorById(doctorId);
         res.status(200).json({
           doctor,
         });
@@ -52,11 +53,15 @@ class DoctorController {
   static async getDoctorByPhone(req: Request, res: Response) {
     const phone = req.params.phone;
     try {
-      const doctor = await Doctor.findOne({phone})
-        .select(
-          '_id firstName lastName phone address unavailablities workingHours sessionDurations reservationType',
-        )
-        .lean();
+      const doctor = await Doctor.findOne(
+        {phone},
+        {
+          'unavailablities._id': 0,
+          'workingHours._id': 0,
+          'sessionDurations._id': 0,
+          __v: 0,
+        },
+      ).lean();
       if (doctor) {
         return res.status(200).json({
           doctor,

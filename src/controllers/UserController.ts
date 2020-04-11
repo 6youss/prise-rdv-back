@@ -5,6 +5,7 @@ import Patient from '../models/Patient';
 import jwt from 'jsonwebtoken';
 import {IVerifyOptions} from 'passport-local';
 import passport from 'passport';
+import {doctorById} from '../selectors/doctor';
 
 class UserController {
   /**
@@ -19,7 +20,7 @@ class UserController {
     try {
       switch (value) {
         case 'doctor': {
-          const doctor = await Doctor.findById(targetId);
+          const doctor = await doctorById(targetId);
           return res.status(200).json({doctor});
         }
         case 'patient': {
