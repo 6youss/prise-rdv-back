@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import User, {IUserType} from '../models/User';
 import Device from '../models/Device';
+import { Schema } from 'mongoose';
 
 const firebaseServiceAccountFile = JSON.parse(
   process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON,
@@ -28,7 +29,7 @@ export async function sendNotification(
     }
   }
 
-  const foundDevices = await Device.find({user: userId});
+  const foundDevices = await Device.find({user: userId as unknown as Schema.Types.ObjectId});
 
   const fcmTokens = foundDevices.map(device => {
     return device.fcmToken;

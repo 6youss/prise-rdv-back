@@ -6,6 +6,7 @@ import {
   timeToMinutes,
   addMinutes,
 } from '../utils/zdate';
+import { Schema } from 'mongoose';
 
 //had to do it with js :x
 export async function queryIsSessionAvailableJs(
@@ -56,7 +57,7 @@ export async function queryIsSessionAvailableJs(
   }
 
   const sessionsCount = await Session.find({
-    doctor: doctorId,
+    doctor: doctorId as unknown as Schema.Types.ObjectId,
     $and: [
       {date: {$gt: addMinutes(dateToReserve, -sessionDuration)}},
       {date: {$lt: addMinutes(dateToReserve, sessionDuration)}},
