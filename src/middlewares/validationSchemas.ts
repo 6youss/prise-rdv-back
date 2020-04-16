@@ -2,18 +2,11 @@ import Joi from '@hapi/joi';
 
 //:::::::::::: COMMON SCHEMA OBJECTS :::::::::::::::::://
 const fromTo = {
-  from: Joi.date()
-    .iso()
-    .required(),
-  to: Joi.date()
-    .iso()
-    .allow(null)
-    .required(),
+  from: Joi.date().iso().required(),
+  to: Joi.date().iso().allow(null).required(),
 };
 const username = Joi.string()
-  .alphanum()
-  .min(3)
-  .max(30)
+  .email()
   .not(Joi.ref('password'))
   .messages({
     'any.invalid': 'username and password must be different',
@@ -22,17 +15,9 @@ const username = Joi.string()
 
 const password = Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'));
 
-const firstName = Joi.string()
-  .alphanum()
-  .min(3)
-  .max(30)
-  .required();
+const firstName = Joi.string().alphanum().min(3).max(30).required();
 
-const lastName = Joi.string()
-  .alphanum()
-  .min(3)
-  .max(30)
-  .required();
+const lastName = Joi.string().alphanum().min(3).max(30).required();
 
 export const objectIdSchema = Joi.string()
   .regex(/^[0-9a-fA-F]{24}$/)
@@ -43,29 +28,19 @@ export const phoneSchema = Joi.string()
   .regex(/^[0-9]{7,10}$/)
   .required();
 
-const address = Joi.string()
-  .min(8)
-  .max(50)
-  .required();
+const address = Joi.string().min(8).max(50).required();
 const reservationType = Joi.string().valid(...['counter', 'time']);
 const unavailablities = Joi.array().items(
   Joi.object({
-    from: Joi.date()
-      .iso()
-      .required(),
-    to: Joi.date()
-      .iso()
-      .required(),
+    from: Joi.date().iso().required(),
+    to: Joi.date().iso().required(),
   }),
 );
 
 const workingHours = Joi.array().items(
   Joi.object({
     ...fromTo,
-    opensAt: Joi.number()
-      .integer()
-      .positive()
-      .required(),
+    opensAt: Joi.number().integer().positive().required(),
     closesAt: Joi.number()
       .integer()
       .positive()
@@ -77,10 +52,7 @@ const workingHours = Joi.array().items(
 const sessionDurations = Joi.array().items(
   Joi.object({
     ...fromTo,
-    duration: Joi.number()
-      .min(5)
-      .max(120)
-      .required(),
+    duration: Joi.number().min(5).max(120).required(),
   }),
 );
 //::::::::::::::::::::::: VALIDATION SCHEMAS ::::::::::::::::::::::::::::/
@@ -131,9 +103,7 @@ export const signUpSchema = Joi.object({
 
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
 
-  confirmPassword: Joi.any()
-    .valid(Joi.ref('password'))
-    .required(),
+  confirmPassword: Joi.any().valid(Joi.ref('password')).required(),
 
   userType: Joi.string()
     .valid(...['doctor', 'patient'])
@@ -154,9 +124,7 @@ export const loginSchema = Joi.object({
 export const sessionSchema = Joi.object({
   patientId: objectIdSchema,
   doctorId: objectIdSchema,
-  date: Joi.date()
-    .iso()
-    .required(),
+  date: Joi.date().iso().required(),
 }).required();
 
 export const deviceSchema = Joi.object({
