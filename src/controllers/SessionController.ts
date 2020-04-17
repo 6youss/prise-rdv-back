@@ -111,7 +111,7 @@ class SessionController {
         doctorId,
         {data: {type: 'NEW_DOCTOR_SESSION', patientId, date}},
         'doctor',
-      ).catch(error => console.log(error));
+      ).catch((error) => console.log('push notification error: ', error));
     } catch (error) {
       res.status(500).json({message: error.message});
     }

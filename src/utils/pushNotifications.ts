@@ -30,12 +30,13 @@ export async function sendNotification(
 
   const foundDevices = await Device.find({user: userId});
 
-  const fcmTokens = foundDevices.map(device => {
+  const fcmTokens = foundDevices.map((device) => {
     return device.fcmToken;
   });
 
   if (fcmTokens && fcmTokens.length > 0) {
-    return await messaging.sendToDevice(fcmTokens, payload);
+    const sendResult = await messaging.sendToDevice(fcmTokens, payload);
+    return sendResult;
   }
   throw new Error(
     `notifications error: the user of type ${userType} with the ${id} doesn't have a registered device`,

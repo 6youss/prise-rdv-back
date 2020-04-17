@@ -28,7 +28,7 @@ export const phoneSchema = Joi.string()
   .regex(/^[0-9]{7,10}$/)
   .required();
 
-const address = Joi.string().min(8).max(50).required();
+const address = Joi.string().min(8).max(120).required();
 const reservationType = Joi.string().valid(...['counter', 'time']);
 const unavailablities = Joi.array().items(
   Joi.object({
