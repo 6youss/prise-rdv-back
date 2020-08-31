@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import Session from '../models/Session';
 import Doctor from '../models/Doctor';
 import Patient from '../models/Patient';
@@ -50,10 +50,10 @@ class SessionController {
    */
   static async getDoctorSessions(req: Request, res: Response) {
     try {
-      const {doctorId} = req.params;
+      const { doctorId } = req.params;
       const doc = await Doctor.findById(doctorId);
       if (!doc) return res.sendStatus(404);
-      const doctorSessions = await Session.find({doctor: doctorId})
+      const doctorSessions = await Session.find({doctor: doctorId as unknown as Schema.Types.ObjectId})
         .select('_id doctor patient date')
         .sort({date: 1});
       res.status(200).json({sessions: doctorSessions});
@@ -70,7 +70,7 @@ class SessionController {
       const {patientId} = req.params;
       const patient = await Patient.findById(patientId);
       if (!patient) return res.sendStatus(404);
-      const patientSessions = await Session.find({patient: patientId}).select(
+      const patientSessions = await Session.find({patient: patientId as unknown as Schema.Types.ObjectId}).select(
         '_id doctor patient date',
       );
       if (patientSessions.length === 0) {

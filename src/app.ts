@@ -13,5 +13,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 configPassport(app);
 // Routes
 app.use('/api', routes);
+app.use('/', (req, res) => {
+    res.send({ message: 'hello world' });
+})
 
 export default app;
